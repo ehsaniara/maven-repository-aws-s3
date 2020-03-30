@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ehsaniara</groupId>
+    <groupId>com.ehsaniara</groupId>
     <artifactId>maven-repository-aws-s3</artifactId>
     <version>1.2.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
@@ -21,11 +19,30 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Jay Ehsaniara</name>
+            <email>ehsaniara@gmail.com</email>
+            <organization>ehsaniara</organization>
+            <organizationUrl>https://github.com/ehsaniara</organizationUrl>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/ehsaniara/maven-repository-aws-s3/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis</system>
+        <url>https://travis-ci.org/ehsaniara/maven-repository-aws-s3</url>
+    </ciManagement>
+
     <scm>
         <connection>scm:git:git://github.com/ehsaniara/maven-repository-aws-s3.git</connection>
         <developerConnection>scm:git:git@github.com/ehsaniara/maven-repository-aws-s3.git</developerConnection>
         <url>https://github.com/ehsaniara/maven-repository-aws-s3</url>
-        <tag>HEAD</tag>
+        <tag>maven-repository-aws-s3-1.2.0</tag>
     </scm>
 
     <properties>
@@ -100,6 +117,7 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.6.0</version>
             </plugin>
+            <!-- Attach source jars-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -114,6 +132,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Attach javadocs jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -140,6 +159,36 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <checkModificationExcludes>
+                        <checkModificationExclude>pom.xml</checkModificationExclude>
+                    </checkModificationExcludes>
+                </configuration>
+            </plugin>
+            <!-- Sign artifacts for uploading to maven central -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -150,7 +199,7 @@
         </snapshotRepository>
         <repository>
             <id>sonatype-nexus-repository</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
     </distributionManagement>
 
