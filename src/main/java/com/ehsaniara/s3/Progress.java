@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.transfer;
+package com.ehsaniara.s3;
 
-public interface TransferProgress {
+public interface Progress {
 
     void progress(byte[] buffer, int length);
 

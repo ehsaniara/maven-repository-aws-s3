@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,21 +14,20 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.utils;
+package com.ehsaniara.s3;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.ehsaniara.s3.CredentialsFactory;
-import com.ehsaniara.s3.EndpointProperty;
-import com.ehsaniara.s3.PathStyleEnabledProperty;
-import com.ehsaniara.s3.S3StorageRegionProviderChain;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
 import java.util.logging.Logger;
 
+/**
+ * S3Connect s3Connect
+ */
 public class S3Connect {
 
     private static final Logger LOGGER = Logger.getLogger(S3Connect.class.getName());
@@ -65,7 +66,7 @@ public class S3Connect {
         final S3StorageRegionProviderChain regionProvider = new S3StorageRegionProviderChain(region);
 
         AmazonS3ClientBuilder builder;
-        builder = AmazonS3ClientBuilder.standard().withCredentials(new CredentialsFactory().create(authenticationInfo));
+        builder = AmazonS3ClientBuilder.standard().withCredentials(new AwsCredentialsFactory().create(authenticationInfo));
 
         if (endpoint.isPresent()) {
             builder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint.get(), builder.getRegion()));

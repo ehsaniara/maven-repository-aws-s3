@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,17 +14,12 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.plugin.download;
+package com.ehsaniara.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.ehsaniara.s3.EndpointProperty;
-import com.ehsaniara.s3.KeyIteratorConcatenated;
-import com.ehsaniara.s3.PathStyleEnabledProperty;
-import com.ehsaniara.s3.plugin.PrefixKeysIterator;
-import com.ehsaniara.s3.utils.S3Connect;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;

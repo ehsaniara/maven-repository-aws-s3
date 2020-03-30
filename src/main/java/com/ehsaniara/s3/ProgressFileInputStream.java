@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.transfer;
+package com.ehsaniara.s3;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public final class TransferProgressFileInputStream extends FileInputStream {
+public final class ProgressFileInputStream extends FileInputStream {
 
-    private final TransferProgress transferProgress;
+    private final Progress progress;
     private long byteLeft;
 
-    public TransferProgressFileInputStream(File file, TransferProgress transferProgress) throws IOException{
+    public ProgressFileInputStream(File file, Progress progress) throws IOException{
         super(file);
-        this.transferProgress = transferProgress;
+        this.progress = progress;
         resetByteLeft();
     }
 
@@ -43,7 +45,7 @@ public final class TransferProgressFileInputStream extends FileInputStream {
     public int read() throws IOException {
         int b = super.read();
         if(b != -1){
-            this.transferProgress.progress(new byte[]{(byte) b}, 1);
+            this.progress.progress(new byte[]{(byte) b}, 1);
             byteLeft--;
         }//else we try to read but it was the end of the stream so nothing to report
         return b;
@@ -53,10 +55,10 @@ public final class TransferProgressFileInputStream extends FileInputStream {
     public int read(byte b[]) throws IOException {
         int count = super.read(b);
         if (count != -1) {
-            this.transferProgress.progress(b, b.length);
+            this.progress.progress(b, b.length);
             byteLeft -= b.length;
         }else{//end of the stream
-            this.transferProgress.progress(b, Math.toIntExact(byteLeft));
+            this.progress.progress(b, Math.toIntExact(byteLeft));
         }
         return count;
     }
@@ -66,21 +68,21 @@ public final class TransferProgressFileInputStream extends FileInputStream {
         int count = super.read(b, off, len);
         if (off == 0) {
             if (count != -1) {
-                this.transferProgress.progress(b, count);
+                this.progress.progress(b, count);
                 byteLeft -= count;
             }else{//end of the stream
-                this.transferProgress.progress(b, Math.toIntExact(byteLeft));
+                this.progress.progress(b, Math.toIntExact(byteLeft));
             }
         } else {
             if (count != -1) {
                 byte[] bytes = new byte[count];
                 System.arraycopy(b, off, bytes, 0, count);
-                this.transferProgress.progress(bytes, len);
+                this.progress.progress(bytes, len);
                 byteLeft -= count;
             }else{//end of the stream
                 byte[] bytes = new byte[Math.toIntExact(byteLeft)];
                 System.arraycopy(b, off, bytes, 0, Math.toIntExact(byteLeft));
-                this.transferProgress.progress(b, Math.toIntExact(byteLeft));
+                this.progress.progress(b, Math.toIntExact(byteLeft));
             }
         }
         return count;

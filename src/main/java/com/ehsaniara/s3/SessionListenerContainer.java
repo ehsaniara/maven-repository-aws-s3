@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,16 +14,29 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.listener;
+package com.ehsaniara.s3;
 
 import org.apache.maven.wagon.events.SessionListener;
 
+/**
+ * Interface for classes which wants to receive and respond to any session update events.
+ */
 public interface SessionListenerContainer {
 
+    /**
+     * @param sessionListener sessionListener
+     */
     void addSessionListener(SessionListener sessionListener);
 
+    /**
+     * @param sessionListener sessionListener
+     */
     void removeSessionListener(SessionListener sessionListener);
 
+    /**
+     * @param sessionListener sessionListener
+     * @return boolean
+     */
     boolean hasSessionListener(SessionListener sessionListener);
 
     void fireSessionOpening();
@@ -32,12 +47,8 @@ public interface SessionListenerContainer {
 
     void fireSessionDisconnected();
 
-    void fireSessionConnectionRefused();
-
     void fireSessionLoggedIn();
 
     void fireSessionLoggedOff();
-
-    void fireSessionError(Exception exception);
 
 }

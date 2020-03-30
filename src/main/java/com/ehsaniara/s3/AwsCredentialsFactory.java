@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,15 +24,15 @@ import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
 import java.util.logging.Logger;
 
-public class CredentialsFactory {
+public class AwsCredentialsFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(CredentialsFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AwsCredentialsFactory.class.getName());
 
     public AWSCredentialsProvider create(AuthenticationInfo authenticationInfo) {
         if (authenticationInfo == null) {
             return new DefaultAWSCredentialsProviderChain();
         } else {
-            LOGGER.info("Using static credentials provider");
+            LOGGER.info("By AWSStaticCredentialsProvider");
             return new AWSStaticCredentialsProvider(new BasicAWSCredentials(authenticationInfo.getUserName(), authenticationInfo.getPassword()));
         }
     }

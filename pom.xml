@@ -4,7 +4,8 @@
 
     <groupId>com.ehsaniara</groupId>
     <artifactId>maven-repository-aws-s3</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.3</version>
+
     <packaging>maven-plugin</packaging>
 
     <name>Maven Repository with AWS S3</name>
@@ -52,7 +53,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-            <version>1.18.12</version>
+            <version>1.18.10</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.wagon</groupId>

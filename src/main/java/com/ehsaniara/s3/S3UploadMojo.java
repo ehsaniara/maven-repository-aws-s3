@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,18 +14,14 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.plugin.upload;
+package com.ehsaniara.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.ehsaniara.s3.EndpointProperty;
-import com.ehsaniara.s3.PathStyleEnabledProperty;
-import com.ehsaniara.s3.utils.S3Connect;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.wagon.authentication.AuthenticationException;
@@ -33,7 +31,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Mojo(name = "s3-upload")
 public class S3UploadMojo extends AbstractMojo {
@@ -61,9 +61,9 @@ public class S3UploadMojo extends AbstractMojo {
     }
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         if (bucket == null) {
-            throw new MojoExecutionException("You need to specify a bucket for the s3-upload goal configuration");
+            throw new MojoExecutionException("s3-upload.bucket is missing, You need to specify a bucket for the s3-upload goal configuration");
         }
 
         AmazonS3 amazonS3;
@@ -71,7 +71,7 @@ public class S3UploadMojo extends AbstractMojo {
             amazonS3 = S3Connect.connect(null, region, EndpointProperty.empty(), new PathStyleEnabledProperty(String.valueOf(S3ClientOptions.DEFAULT_PATH_STYLE_ACCESS)));
         } catch (AuthenticationException e) {
             throw new MojoExecutionException(
-                    String.format("Unable to authenticate to S3 with the available credentials. Make sure to either define the environment variables or System properties defined in https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html.%n" +
+                    String.format("Unable to authenticate to S3 with the available credentials. Make sure to either define the environment variables or System properties defined in https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html " +
                             "Detail: %s", e.getMessage()),
                     e);
         }
@@ -107,14 +107,14 @@ public class S3UploadMojo extends AbstractMojo {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
 
-            for (File lFile : files) {
+            Arrays.stream(files).forEachOrdered(lFile -> {
                 if (lFile.isDirectory()) {
                     List<String> filesFound = findFilesToUpload(lFile.getAbsolutePath());
                     totalFiles.addAll(filesFound);
                 } else {
                     totalFiles.add(lFile.getAbsolutePath());
                 }
-            }
+            });
 
         } else {
             totalFiles.add(file.getAbsolutePath());
@@ -147,11 +147,7 @@ public class S3UploadMojo extends AbstractMojo {
     }
 
     private String keyIfNull() {
-        if (key == null) {
-            return new File(path).getName();
-        } else {
-            return key;
-        }
+        return Objects.requireNonNullElseGet(key, () -> new File(path).getName());
     }
 
 }

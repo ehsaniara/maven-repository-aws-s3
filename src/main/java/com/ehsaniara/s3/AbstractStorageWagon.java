@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,14 +14,8 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.wagon;
+package com.ehsaniara.s3;
 
-import com.ehsaniara.s3.listener.SessionListenerContainer;
-import com.ehsaniara.s3.listener.SessionListenerContainerImpl;
-import com.ehsaniara.s3.listener.TransferListenerContainer;
-import com.ehsaniara.s3.listener.TransferListenerContainerImpl;
-import com.ehsaniara.s3.resolver.BaseDirectoryResolver;
-import com.ehsaniara.s3.resolver.BucketResolver;
 import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
@@ -29,8 +25,6 @@ import org.apache.maven.wagon.events.TransferListener;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.repository.Repository;
-
-import java.util.logging.Logger;
 
 public abstract class AbstractStorageWagon implements Wagon {
 
@@ -45,17 +39,15 @@ public abstract class AbstractStorageWagon implements Wagon {
     protected final BaseDirectoryResolver containerResolver;
 
     protected final SessionListenerContainer sessionListenerContainer;
-    protected final TransferListenerContainer transferListenerContainer;
+    protected final ListenerContainer listenerContainer;
 
     private boolean interactive;
-
-    private static final Logger LOGGER = Logger.getLogger(AbstractStorageWagon.class.getName());
 
     public AbstractStorageWagon() {
         this.accountResolver = new BucketResolver();
         this.containerResolver = new BaseDirectoryResolver();
         this.sessionListenerContainer = new SessionListenerContainerImpl(this);
-        this.transferListenerContainer = new TransferListenerContainerImpl(this);
+        this.listenerContainer = new ListenerContainerImpl(this);
     }
 
     @Override
@@ -69,7 +61,7 @@ public abstract class AbstractStorageWagon implements Wagon {
     }
 
     @Override
-    public void openConnection() throws ConnectionException, AuthenticationException {
+    public void openConnection() {
         throw new UnsupportedOperationException();
     }
 
@@ -138,17 +130,17 @@ public abstract class AbstractStorageWagon implements Wagon {
 
     @Override
     public void addTransferListener(TransferListener transferListener) {
-        transferListenerContainer.addTransferListener(transferListener);
+        listenerContainer.addTransferListener(transferListener);
     }
 
     @Override
     public void removeTransferListener(TransferListener transferListener) {
-        transferListenerContainer.removeTransferListener(transferListener);
+        listenerContainer.removeTransferListener(transferListener);
     }
 
     @Override
     public boolean hasTransferListener(TransferListener transferListener) {
-        return transferListenerContainer.hasTransferListener(transferListener);
+        return listenerContainer.hasTransferListener(transferListener);
     }
 
     @Override

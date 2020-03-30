@@ -1,4 +1,5 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +17,9 @@
 package com.ehsaniara.s3;
 
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.ehsaniara.s3.resolver.KeyResolver;
-import com.ehsaniara.s3.transfer.TransferProgress;
-import com.ehsaniara.s3.transfer.TransferProgressImpl;
-import com.ehsaniara.s3.wagon.AbstractStorageWagon;
-import com.ehsaniara.s3.wagon.PublicReadProperty;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.PathUtils;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
@@ -43,9 +40,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@Setter
+@Getter
 public class S3StorageWagon extends AbstractStorageWagon {
 
-    private S3StorageRepository s3StorageRepository;
+    private S3StorageRepo s3StorageRepo;
     private final KeyResolver keyResolver = new KeyResolver();
 
     private String region;
@@ -59,16 +58,16 @@ public class S3StorageWagon extends AbstractStorageWagon {
     public void get(String resourceName, File file) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
 
         Resource resource = new Resource(resourceName);
-        transferListenerContainer.fireTransferInitiated(resource, TransferEvent.REQUEST_GET);
-        transferListenerContainer.fireTransferStarted(resource, TransferEvent.REQUEST_GET, file);
+        listenerContainer.fireTransferInitiated(resource, TransferEvent.REQUEST_GET);
+        listenerContainer.fireTransferStarted(resource, TransferEvent.REQUEST_GET, file);
 
-        final TransferProgress transferProgress = new TransferProgressImpl(resource, TransferEvent.REQUEST_GET, transferListenerContainer);
+        final Progress progress = new ProgressImpl(resource, TransferEvent.REQUEST_GET, listenerContainer);
 
         try {
-            s3StorageRepository.copy(resourceName, file, transferProgress);
-            transferListenerContainer.fireTransferCompleted(resource, TransferEvent.REQUEST_GET);
+            s3StorageRepo.copy(resourceName, file, progress);
+            listenerContainer.fireTransferCompleted(resource, TransferEvent.REQUEST_GET);
         } catch (Exception e) {
-            transferListenerContainer.fireTransferError(resource, TransferEvent.REQUEST_GET, e);
+            listenerContainer.fireTransferError(resource, TransferEvent.REQUEST_GET, e);
             throw e;
         }
     }
@@ -80,15 +79,15 @@ public class S3StorageWagon extends AbstractStorageWagon {
 
         LOGGER.log(Level.FINER, String.format("Uploading file %s to %s", file.getAbsolutePath(), resourceName));
 
-        transferListenerContainer.fireTransferInitiated(resource, TransferEvent.REQUEST_PUT);
-        transferListenerContainer.fireTransferStarted(resource, TransferEvent.REQUEST_PUT, file);
-        final TransferProgress transferProgress = new TransferProgressImpl(resource, TransferEvent.REQUEST_PUT, transferListenerContainer);
+        listenerContainer.fireTransferInitiated(resource, TransferEvent.REQUEST_PUT);
+        listenerContainer.fireTransferStarted(resource, TransferEvent.REQUEST_PUT, file);
+        final Progress progress = new ProgressImpl(resource, TransferEvent.REQUEST_PUT, listenerContainer);
 
         try {
-            s3StorageRepository.put(file, resourceName, transferProgress);
-            transferListenerContainer.fireTransferCompleted(resource, TransferEvent.REQUEST_PUT);
+            s3StorageRepo.put(file, resourceName, progress);
+            listenerContainer.fireTransferCompleted(resource, TransferEvent.REQUEST_PUT);
         } catch (TransferFailedException e) {
-            transferListenerContainer.fireTransferError(resource, TransferEvent.REQUEST_PUT, e);
+            listenerContainer.fireTransferError(resource, TransferEvent.REQUEST_PUT, e);
             throw e;
         }
     }
@@ -96,7 +95,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
     @Override
     public boolean getIfNewer(String resourceName, File file, long timeStamp) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
 
-        if (s3StorageRepository.newResourceAvailable(resourceName, timeStamp)) {
+        if (s3StorageRepo.newResourceAvailable(resourceName, timeStamp)) {
             get(resourceName, file);
             return true;
         }
@@ -119,14 +118,14 @@ public class S3StorageWagon extends AbstractStorageWagon {
     }
 
     @Override
-    public boolean resourceExists(String resourceName) throws TransferFailedException, AuthorizationException {
-        return s3StorageRepository.exists(resourceName);
+    public boolean resourceExists(String resourceName) {
+        return s3StorageRepo.exists(resourceName);
     }
 
     @Override
-    public List<String> getFileList(String s) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+    public List<String> getFileList(String s) throws TransferFailedException, ResourceDoesNotExistException {
         try {
-            List<String> list = s3StorageRepository.list(s);
+            List<String> list = s3StorageRepo.list(s);
             list = convertS3ListToMavenFileList(list, s);
             if (list.isEmpty()) {
                 throw new ResourceDoesNotExistException(s);
@@ -138,7 +137,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
     }
 
     private List<String> convertS3ListToMavenFileList(List<String> list, String path) {
-        String prefix = keyResolver.resolve(s3StorageRepository.getBaseDirectory(), path);
+        String prefix = keyResolver.resolve(s3StorageRepo.getBaseDirectory(), path);
         Set<String> folders = new HashSet<>();
         List<String> result = list.stream().map(key -> {
             String filePath = key;
@@ -166,7 +165,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
     }
 
     @Override
-    public void connect(Repository repository, AuthenticationInfo authenticationInfo, ProxyInfoProvider proxyInfoProvider) throws ConnectionException, AuthenticationException {
+    public void connect(Repository repository, AuthenticationInfo authenticationInfo, ProxyInfoProvider proxyInfoProvider) throws AuthenticationException {
 
         this.repository = repository;
         this.sessionListenerContainer.fireSessionOpening();
@@ -175,51 +174,19 @@ public class S3StorageWagon extends AbstractStorageWagon {
         final String directory = containerResolver.resolve(repository);
 
         LOGGER.log(Level.FINER, String.format("Opening connection for bucket %s and directory %s", bucket, directory));
-        s3StorageRepository = new S3StorageRepository(bucket, directory, new PublicReadProperty(publicRepository));
-        s3StorageRepository.connect(authenticationInfo, region, new EndpointProperty(endpoint), new PathStyleEnabledProperty(pathStyleEnabled));
+        s3StorageRepo = new S3StorageRepo(bucket, directory, new PublicReadProperty(publicRepository));
+        s3StorageRepo.connect(authenticationInfo, region, new EndpointProperty(endpoint), new PathStyleEnabledProperty(pathStyleEnabled));
 
         sessionListenerContainer.fireSessionLoggedIn();
         sessionListenerContainer.fireSessionOpened();
     }
 
     @Override
-    public void disconnect() throws ConnectionException {
+    public void disconnect() {
         sessionListenerContainer.fireSessionDisconnecting();
-        s3StorageRepository.disconnect();
+        s3StorageRepo.disconnect();
         sessionListenerContainer.fireSessionLoggedOff();
         sessionListenerContainer.fireSessionDisconnected();
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public Boolean getPublicRepository() {
-        return publicRepository;
-    }
-
-    public void setPublicRepository(Boolean publicRepository) {
-        this.publicRepository = publicRepository;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    public String getPathStyleAccessEnabled() {
-        return pathStyleEnabled;
-    }
-
-    public void setPathStyleAccessEnabled(String pathStyleEnabled) {
-        this.pathStyleEnabled = pathStyleEnabled;
     }
 
 }

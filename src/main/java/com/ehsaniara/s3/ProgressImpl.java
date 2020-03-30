@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,18 +14,17 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.transfer;
+package com.ehsaniara.s3;
 
-import com.ehsaniara.s3.listener.TransferListenerContainer;
 import org.apache.maven.wagon.resource.Resource;
 
-public class TransferProgressImpl implements TransferProgress {
+public class ProgressImpl implements Progress {
 
     private final Resource resource;
     private final int requestType;
-    private final TransferListenerContainer listenerContainer;
+    private final ListenerContainer listenerContainer;
 
-    public TransferProgressImpl(Resource resource, int requestType, TransferListenerContainer listenerContainer) {
+    public ProgressImpl(Resource resource, int requestType, ListenerContainer listenerContainer) {
         this.resource = resource;
         this.requestType = requestType;
         this.listenerContainer = listenerContainer;

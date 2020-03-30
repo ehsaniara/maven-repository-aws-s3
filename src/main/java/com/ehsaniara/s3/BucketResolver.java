@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,20 +14,15 @@
  * limitations under the License.
  */
 
-package com.ehsaniara.s3.resolver;
+package com.ehsaniara.s3;
 
 import org.apache.maven.wagon.repository.Repository;
 
-public class BaseDirectoryResolver {
+public class BucketResolver {
 
-    public String resolve(Repository repository) {
+    public String resolve(Repository repository){
 
-        StringBuilder stringBuilder = new StringBuilder(repository.getBasedir()).deleteCharAt(0);
-
-        if ((stringBuilder.length() != 0) && (stringBuilder.charAt(stringBuilder.length() - 1) != '/')) {
-            stringBuilder.append('/');
-        }
-
-        return stringBuilder.toString();
+        return repository.getHost();
     }
+
 }

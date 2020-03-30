@@ -1,4 +1,6 @@
 /*
+ * Copyright 2020 Jay Ehsaniara
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,12 +18,6 @@ package com.ehsaniara.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import com.ehsaniara.s3.resolver.KeyResolver;
-import com.ehsaniara.s3.transfer.TransferProgress;
-import com.ehsaniara.s3.transfer.TransferProgressFileInputStream;
-import com.ehsaniara.s3.transfer.TransferProgressFileOutputStream;
-import com.ehsaniara.s3.utils.S3Connect;
-import com.ehsaniara.s3.wagon.PublicReadProperty;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
@@ -37,7 +33,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class S3StorageRepository {
+public class S3StorageRepo {
 
     private final String bucket;
     private final String baseDirectory;
@@ -47,27 +43,27 @@ public class S3StorageRepository {
     private AmazonS3 amazonS3;
     private PublicReadProperty publicReadProperty;
 
-    private static final Logger LOGGER = Logger.getLogger(S3StorageRepository.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(S3StorageRepo.class.getName());
 
-    public S3StorageRepository(String bucket) {
+    public S3StorageRepo(String bucket) {
         this.bucket = bucket;
         this.baseDirectory = "";
         this.publicReadProperty = new PublicReadProperty(false);
     }
 
-    public S3StorageRepository(String bucket, PublicReadProperty publicReadProperty) {
+    public S3StorageRepo(String bucket, PublicReadProperty publicReadProperty) {
         this.bucket = bucket;
         this.baseDirectory = "";
         this.publicReadProperty = publicReadProperty;
     }
 
-    public S3StorageRepository(String bucket, String baseDirectory) {
+    public S3StorageRepo(String bucket, String baseDirectory) {
         this.bucket = bucket;
         this.baseDirectory = baseDirectory;
         this.publicReadProperty = new PublicReadProperty(false);
     }
 
-    public S3StorageRepository(String bucket, String baseDirectory, PublicReadProperty publicReadProperty) {
+    public S3StorageRepo(String bucket, String baseDirectory, PublicReadProperty publicReadProperty) {
         this.bucket = bucket;
         this.baseDirectory = baseDirectory;
         this.publicReadProperty = publicReadProperty;
@@ -77,7 +73,7 @@ public class S3StorageRepository {
         this.amazonS3 = S3Connect.connect(authenticationInfo, region, endpoint, pathStyle);
     }
 
-    public void copy(String resourceName, File destination, TransferProgress transferProgress) throws TransferFailedException, ResourceDoesNotExistException {
+    public void copy(String resourceName, File destination, Progress progress) throws TransferFailedException, ResourceDoesNotExistException {
 
         final String key = resolveKey(resourceName);
 
@@ -87,10 +83,10 @@ public class S3StorageRepository {
             try {
                 s3Object = amazonS3.getObject(bucket, key);
             } catch (AmazonS3Exception e) {
-                throw new ResourceDoesNotExistException("Resource does not exist");
+                throw new ResourceDoesNotExistException("Resource not exist");
             }
             destination.getParentFile().mkdirs();//make sure the folder exists or the outputStream will fail.
-            try (OutputStream outputStream = new TransferProgressFileOutputStream(destination, transferProgress);
+            try (OutputStream outputStream = new ProgressFileOutputStream(destination, progress);
                  InputStream inputStream = s3Object.getObjectContent()) {
                 IOUtils.copy(inputStream, outputStream);
             }
@@ -100,12 +96,12 @@ public class S3StorageRepository {
         }
     }
 
-    public void put(File file, String destination, TransferProgress transferProgress) throws TransferFailedException {
+    public void put(File file, String destination, Progress progress) throws TransferFailedException {
 
         final String key = resolveKey(destination);
 
         try {
-            try (InputStream inputStream = new TransferProgressFileInputStream(file, transferProgress)) {
+            try (InputStream inputStream = new ProgressFileInputStream(file, progress)) {
                 PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, key, inputStream, createContentLengthMetadata(file));
                 applyPublicRead(putObjectRequest);
                 amazonS3.putObject(putObjectRequest);
