@@ -7,7 +7,7 @@ With the help of this maven-plugin you can create your own private Maven Reposit
  
 ![High Level Arch.](material/maven-repository-aws-s3-1.png)
 
-**Installation**
+**Start Here**
 
 * [Configure AWS Pre-Req](#Configure-AWS-Pre-Req)
 * [Configure By AWS CLI (No ready yet)](#Configure-By-AWS-CLI)
@@ -60,9 +60,9 @@ Create policy with the following json (select json tab):
     {
       "Effect": "Allow",
       "Action": [
-        "s3:PutObject",
         "s3:GetObject",
         "s3:ListBucket",
+        "s3:PutObject",
         "s3:DeleteObject"
       ],
       "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
