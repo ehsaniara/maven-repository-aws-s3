@@ -16,6 +16,8 @@ With the help of this maven-plugin you can create your own private Maven Reposit
     * [Create Policy](#Create-Policy)
     * [Create IAM USER](#Create-IAM-USER)
 * [Local PC Setup](#Local-PC-Setup)
+* [CI/CD Pipeline Setup](#CI-CD-Pipeline-Setup)
+* [Reference](#Reference)
 
 
 <a name="Configure-AWS-Pre-Req"></a>
@@ -216,9 +218,12 @@ mvn deploy
 ```
 
 
+<a name="CI-CD-Pipeline-Setup"></a>
 ## CI/CD Pipeline Setup
 [missing..]
 
+
+<a name="Reference"></a>
 ## Reference
 
 Apache wagon: http://maven.apache.org/wagon/
