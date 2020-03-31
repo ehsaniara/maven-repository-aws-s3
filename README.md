@@ -21,6 +21,9 @@ With the help of this plugin you can create your private Maven Repository with t
 
 
 
+### Security Concerns
+
+
 
 ## Local PC Setup
 If you plane to deploy you project jar from your local machine you need to follow the following steps.
@@ -142,6 +145,14 @@ for Example:
 </build>
 ```
 
+once you have setup your pom.xml file in your project you can run the following line:
+
+```shell script
+# to clean your target directory
+mvn clean
+# deploy your artfact into you maven-repo (AWS S3 Bucket)
+mvn deploy
+```
 
 
 ## CI/CD Pipeline Setup
