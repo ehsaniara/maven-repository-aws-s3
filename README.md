@@ -40,7 +40,7 @@ You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 #### Note: make sure that you are in your project root directory and have permission to create a file.
 
 ```shell script
-curl -s https://github.com/ehsaniara/maven-repository-aws-s3/aws-s3-setup.sh | bash /dev/stdin arg1 arg2
+curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/master/aws-s3-setup.sh | bash /dev/stdin arg1 arg2
 ```
 
 
