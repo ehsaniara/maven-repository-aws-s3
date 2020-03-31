@@ -17,13 +17,13 @@ First thing first, I assume you already have AWS account and with (Preferably Ad
 You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 ## AWS CLI:
 
-#### Note: make sure that you have latest AWS CLI installed in your PC.
-#### Note: make sure that you are in your project root directory and have permission to create a file.
+###### Note: make sure that you have latest AWS CLI installed in your PC.
+###### Note: make sure that you are in your project root directory and have permission to create a file.
 
 ```shell script
 curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/master/aws-s3-setup.sh | bash /dev/stdin bucket_name username
 ```
-#### Note: AWS CLI script is not completed
+###### Note: AWS CLI script is not completed
 
 ## AWS Console
 (browser: https://aws.amazon.com/)
@@ -31,7 +31,7 @@ curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/mast
 ### Create S3 Bucket
 
 create a AWS S3 bucket, try to have unique name from you domain, for example: ```my-project-com-maven-repository```
-##### Note: Block all public access on the bucket
+###### Note: Block all public access on the bucket
 and also create 2 folder of ```release``` and ```snapshot``` in it.
 
 #### Create Policy
