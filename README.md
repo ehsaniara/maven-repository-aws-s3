@@ -156,3 +156,8 @@ mvn deploy
 
 
 ## CI/CD Pipeline Setup
+
+
+## Reference
+
+Apache wagon: http://maven.apache.org/wagon/
