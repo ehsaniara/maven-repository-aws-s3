@@ -12,7 +12,8 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 * [Configure AWS Pre-Req](#Configure-AWS-Pre-Req)
 * [Configure By AWS CLI (No ready yet)](#Configure-By-AWS-CLI)
 * [Configure By AWS Console](#Configure-By-AWS-Console)
-*   [Create S3 Bucket](#Create-S3-Bucket)
+    * [Create S3 Bucket](#Create-S3-Bucket)
+    * [Create Policy](#Create-Policy)
 
 
 <a name="Configure-AWS-Pre-Req"></a>
@@ -43,6 +44,7 @@ create a AWS S3 bucket, try to have unique name from you domain, for example: ``
 ###### Note: Block all public access on the bucket
 and also create 2 folder of ```release``` and ```snapshot``` in it.
 
+<a name="Create-Policy"></a>
 ### Create Policy
 Create policy with the following json (select json tab):
 
