@@ -8,14 +8,19 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 ![High Level Arch.](material/maven-repository-aws-s3-1.png)
 
 **Installation**
-[missing..]
+<!--ts-->
+
+* [Configure AWS Pre-Req](##Configure AWS Pre-Req)
+* [Configure By AWS CLI](##Configure By AWS CLI)
+* [Configure By AWS Console](##Configure By AWS Console)
+
 
 
 ## Configure AWS Pre-Req
 First thing first, I assume you already have AWS account and with (Preferably Admin permission) permission to create IAM User, -Rule and -Policy.
 
 You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
-## AWS CLI:
+## Configure By AWS CLI:
 
 ###### Note: make sure that you have latest AWS CLI installed in your PC.
 ###### Note: make sure that you are in your project root directory and have permission to create a file.
@@ -25,7 +30,7 @@ curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/mast
 ```
 ###### Note: AWS CLI script is not completed
 
-## AWS Console
+## Configure By AWS Console
 (browser: https://aws.amazon.com/)
 
 ### Create S3 Bucket
@@ -208,4 +213,3 @@ mvn deploy
 ## Reference
 
 Apache wagon: http://maven.apache.org/wagon/
-[missing..]
