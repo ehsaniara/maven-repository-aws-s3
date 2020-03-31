@@ -1,6 +1,7 @@
 # maven-repository-aws-s3
 
 **Introduction**
+![High Level Arch.](maven-repository-aws-s3-1.png)
 
 **Installation**
 
