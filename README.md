@@ -6,23 +6,23 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 ![High Level Arch.](maven-repository-aws-s3-1.png)
 
 **Installation**
-
+[missing..]
 
 
 ## Configure AWS Pre-Req
-
+[missing..]
 
 
 ### Create IAM
-
+[missing..]
 
 
 ### Create S3 Bucket
-
+[missing..]
 
 
 ### Security Concerns
-
+[missing..]
 
 
 ## Local PC Setup
@@ -156,8 +156,9 @@ mvn deploy
 
 
 ## CI/CD Pipeline Setup
-
+[missing..]
 
 ## Reference
 
 Apache wagon: http://maven.apache.org/wagon/
+[missing..]
