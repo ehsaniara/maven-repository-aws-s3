@@ -1,7 +1,7 @@
 # maven-repository-aws-s3
 
 **Introduction**
-With the help of this plugin you can create your private Maven Repository with the essential features.
+With the help of this maven-plugin you can create your own private Maven Repository with the essential features. There are many commercial products out there, fro example: [Nexus](https://help.sonatype.com/repomanager3/formats/maven-repositories), [JFrog](https://jfrog.com/artifactory/) and ets.., but the drawback is they required more resources (Compute and storage) and some are costly. Where you can simply setup in your AWS cloud with much much less cost.
  
 ![High Level Arch.](maven-repository-aws-s3-1.png)
 
@@ -61,7 +61,7 @@ you basically gave permission to maven to access the S3 bucket, to be able to pu
 </settings>
 ```
 
-* on your project ```pom.xml``` add the following xml to let maven **DOWNLOAD** your project artfacet from the maven-repo 
+* on your project ```pom.xml``` add the following xml to let maven **DOWNLOAD** your project artifactory from the maven-repo 
 ```xml
 <repositories>
     <repository>
@@ -78,7 +78,7 @@ you basically gave permission to maven to access the S3 bucket, to be able to pu
 ##### Note: make sure that```<id>YOUR_BUCKET_NAME-snapshot</id>``` and ```<id>YOUR_BUCKET_NAME-release</id>``` should be identical with your ```.m2/setting.xml``` ids
 
 * The following xml is required if you want ,user be able to upload into maven repo., from its terminal or idea
-on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your project artfacet into the maven-repo 
+on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your project artifactory into the maven-repo 
 ```xml
 <distributionManagement>
     <snapshotRepository>
@@ -150,7 +150,7 @@ once you have setup your pom.xml file in your project you can run the following 
 ```shell script
 # to clean your target directory
 mvn clean
-# deploy your artfact into you maven-repo (AWS S3 Bucket)
+# deploy your artifactory into you maven-repo (AWS S3 Bucket)
 mvn deploy
 ```
 
