@@ -35,7 +35,7 @@ You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 ```shell script
 curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/master/aws-s3-setup.sh | bash /dev/stdin bucket_name username
 ```
-###### Note: currently AWS CLI script is not completed, Please try AWS Console one
+###### Note: Currently AWS CLI script is not completed, Please try AWS Console one
 
 <a name="Configure-By-AWS-Console"></a>
 ## Configure By AWS Console

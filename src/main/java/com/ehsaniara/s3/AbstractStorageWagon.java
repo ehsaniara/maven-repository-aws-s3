@@ -35,17 +35,12 @@ public abstract class AbstractStorageWagon implements Wagon {
 
     protected Repository repository = null;
 
-    protected final BucketResolver accountResolver;
-    protected final BaseDirectoryResolver containerResolver;
-
     protected final SessionListenerContainer sessionListenerContainer;
     protected final ListenerContainer listenerContainer;
 
     private boolean interactive;
 
     public AbstractStorageWagon() {
-        this.accountResolver = new BucketResolver();
-        this.containerResolver = new BaseDirectoryResolver();
         this.sessionListenerContainer = new SessionListenerContainerImpl(this);
         this.listenerContainer = new ListenerContainerImpl(this);
     }

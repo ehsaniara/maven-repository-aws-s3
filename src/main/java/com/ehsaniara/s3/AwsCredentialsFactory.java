@@ -22,17 +22,18 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class AwsCredentialsFactory {
 
     private static final Logger LOGGER = Logger.getLogger(AwsCredentialsFactory.class.getName());
 
-    public AWSCredentialsProvider create(AuthenticationInfo authenticationInfo) {
-        if (authenticationInfo == null) {
+    public AWSCredentialsProvider connect(AuthenticationInfo authenticationInfo) {
+        if (Objects.isNull(authenticationInfo)) {
             return new DefaultAWSCredentialsProviderChain();
         } else {
-            LOGGER.info("By AWSStaticCredentialsProvider");
+            LOGGER.info("AWS Connection By AWSStaticCredentialsProvider class");
             return new AWSStaticCredentialsProvider(new BasicAWSCredentials(authenticationInfo.getUserName(), authenticationInfo.getPassword()));
         }
     }

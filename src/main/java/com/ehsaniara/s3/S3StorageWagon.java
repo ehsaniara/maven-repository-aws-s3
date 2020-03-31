@@ -172,8 +172,15 @@ public class S3StorageWagon extends AbstractStorageWagon {
         this.repository = repository;
         this.sessionListenerContainer.fireSessionOpening();
 
-        final String bucket = accountResolver.resolve(repository);
-        final String directory = containerResolver.resolve(repository);
+        final String bucket = repository.getHost();
+
+        StringBuilder stringBuilder = new StringBuilder(repository.getBasedir()).deleteCharAt(0);
+        if ((stringBuilder.length() > 0) //
+                && (stringBuilder.charAt(stringBuilder.length() - 1) != '/')) {
+            stringBuilder.append('/');
+        }
+
+        final String directory = stringBuilder.toString();
 
         LOGGER.log(Level.FINER, String.format("Opening connection for bucket %s and directory %s", bucket, directory));
         s3StorageRepo = new S3StorageRepo(bucket, directory, new PublicReadProperty(publicRepository));

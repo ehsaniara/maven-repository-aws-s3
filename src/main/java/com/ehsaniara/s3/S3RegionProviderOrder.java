@@ -16,13 +16,17 @@
 
 package com.ehsaniara.s3;
 
-import org.apache.maven.wagon.repository.Repository;
+import com.amazonaws.regions.*;
 
-public class BucketResolver {
+public class S3RegionProviderOrder extends AwsRegionProviderChain {
 
-    public String resolve(Repository repository){
-
-        return repository.getHost();
+    public S3RegionProviderOrder(final String providedRegion) {
+        super(new MavenSettingsRegionProvider(providedRegion),
+                new AwsDefaultEnvRegionProvider(),
+                new AwsEnvVarOverrideRegionProvider(),
+                new AwsSystemPropertyRegionProvider(),
+                new AwsProfileRegionProvider(),
+                new InstanceMetadataRegionProvider());
     }
 
 }

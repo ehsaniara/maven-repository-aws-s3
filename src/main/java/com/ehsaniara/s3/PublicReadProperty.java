@@ -16,9 +16,14 @@
 
 package com.ehsaniara.s3;
 
+import java.util.Objects;
+
 public class PublicReadProperty {
 
+    // first priority: from .m2/setting.xml configuration parameters: <publicRepository>false</publicRepository>
     private static final String PUBLIC_REPOSITORY_PROP_TAG = "publicRepository";
+
+    //second priority: get it from environment
     private static final String PUBLIC_REPOSITORY_ENV_TAG = "PUBLIC_REPOSITORY";
 
     private Boolean publicRepository;
@@ -28,18 +33,17 @@ public class PublicReadProperty {
     }
 
     public boolean get() {
-        if (publicRepository != null) {
+        if (Objects.nonNull(publicRepository))
             return publicRepository;
+
+        String publicRepositoryPropTag = System.getProperty(PUBLIC_REPOSITORY_PROP_TAG);
+        if (Objects.nonNull(publicRepositoryPropTag)) {
+            return Boolean.parseBoolean(publicRepositoryPropTag);
         }
 
-        String publicRepositoryProp = System.getProperty(PUBLIC_REPOSITORY_PROP_TAG);
-        if (publicRepositoryProp != null) {
-            return Boolean.valueOf(publicRepositoryProp);
-        }
-
-        String publicRepositoryEnv = System.getenv(PUBLIC_REPOSITORY_ENV_TAG);
-        if (publicRepositoryEnv != null) {
-            return Boolean.valueOf(publicRepositoryEnv);
+        String publicRepositoryEnvTag = System.getenv(PUBLIC_REPOSITORY_ENV_TAG);
+        if (Objects.nonNull(publicRepositoryEnvTag)) {
+            return Boolean.parseBoolean(publicRepositoryEnvTag);
         }
 
         return false;

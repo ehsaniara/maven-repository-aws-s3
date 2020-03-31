@@ -23,6 +23,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
@@ -44,29 +45,29 @@ public class S3Connect {
 
             return amazonS3;
         } catch (SdkClientException e) {
-            if (builder != null) {
-                StringBuilder message = new StringBuilder();
-                message.append("Failed to connect");
-                if (builder.getEndpoint() != null) {
-                    message.append(
+            if (Objects.nonNull(builder)) {
+                StringBuilder errorMessage = new StringBuilder();
+                errorMessage.append("Failed to connect");
+                if (Objects.nonNull(builder.getEndpoint())) {
+                    errorMessage.append(
                             String.format(" to endpoint [%s] using region [%s]",
                                     builder.getEndpoint().getServiceEndpoint(),
                                     builder.getEndpoint().getSigningRegion()));
 
                 } else {
-                    message.append(String.format(" using region [%s]", builder.getRegion()));
+                    errorMessage.append(String.format(" using region [%s]", builder.getRegion()));
                 }
-                throw new AuthenticationException(message.toString(), e);
+                throw new AuthenticationException(errorMessage.toString(), e);
             }
             throw new AuthenticationException("Could not authenticate", e);
         }
     }
 
     private static AmazonS3ClientBuilder createAmazonS3ClientBuilder(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) {
-        final S3StorageRegionProviderChain regionProvider = new S3StorageRegionProviderChain(region);
+        final S3RegionProviderOrder regionProvider = new S3RegionProviderOrder(region);
 
         AmazonS3ClientBuilder builder;
-        builder = AmazonS3ClientBuilder.standard().withCredentials(new AwsCredentialsFactory().create(authenticationInfo));
+        builder = AmazonS3ClientBuilder.standard().withCredentials(new AwsCredentialsFactory().connect(authenticationInfo));
 
         if (endpoint.isPresent()) {
             builder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint.get(), builder.getRegion()));
