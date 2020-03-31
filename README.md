@@ -10,19 +10,18 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 **Installation**
 
 * [Configure AWS Pre-Req](#Configure-AWS-Pre-Req)
-* [Configure By AWS CLI](#Configure-By-AWS-CLI)
+* [Configure By AWS CLI (No ready yet)](#Configure-By-AWS-CLI)
 * [Configure By AWS Console](#Configure-By-AWS-Console)
+*   [Create S3 Bucket](#Create-S3-Bucket)
 
 
-...snip...
-<a name="Configure-AWS-Pre-Req"/>
+<a name="Configure-AWS-Pre-Req"></a>
 ## Configure AWS Pre-Req
 First thing first, I assume you already have AWS account and with (Preferably Admin permission) permission to create IAM User, -Rule and -Policy.
 
 You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 
-...snip...
-<a name="Configure-By-AWS-CLI"/>
+<a name="Configure-By-AWS-CLI"></a>
 ## Configure By AWS CLI:
 
 ###### Note: make sure that you have latest AWS CLI installed in your PC.
@@ -33,18 +32,18 @@ curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/mast
 ```
 ###### Note: AWS CLI script is not completed
 
-...snip...
-<a name="Configure-By-AWS-Console"/>
+<a name="Configure-By-AWS-Console"></a>
 ## Configure By AWS Console
 (browser: https://aws.amazon.com/)
 
+<a name="Create-S3-Bucket"></a>
 ### Create S3 Bucket
 
 create a AWS S3 bucket, try to have unique name from you domain, for example: ```my-project-com-maven-repository```
 ###### Note: Block all public access on the bucket
 and also create 2 folder of ```release``` and ```snapshot``` in it.
 
-#### Create Policy
+### Create Policy
 Create policy with the following json (select json tab):
 
 ##### Note: dont forget to replace ```YOUR_BUCKET_NAME``` by your bucket name, for example: ```my-project-com-maven-repository```
