@@ -28,6 +28,7 @@ If you plane to deploy you project jar from your local machine you need to follo
 * on your local maven setup directory ```.m2``` add the following XML snaps in ```setting.xml```. 
 you basically gave permission to maven to access the S3 bucket, to be able to push or pull the files.
 
+##### Note: create ```setting.xml``` if it's not exist in ```.m2``` directory
 ```xml
 <settings>
   <servers>
@@ -88,8 +89,6 @@ on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your
 </distributionManagement>
 
 ```
-
-##### Note: create ```setting.xml``` if it's not exist in ```.m2``` directory
 
 
 ## CI/CD Pipeline Setup
