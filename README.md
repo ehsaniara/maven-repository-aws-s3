@@ -60,9 +60,10 @@ Create policy with the following json (select json tab):
     {
       "Effect": "Allow",
       "Action": [
-        "s3:GetObject",
-        "s3:ListBucket",
         "s3:PutObject",
+        "s3:GetObject",
+        "s3:CreateBucket",
+        "s3:ListBucket",
         "s3:DeleteObject"
       ],
       "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"

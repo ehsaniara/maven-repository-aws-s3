@@ -4,7 +4,7 @@
 
     <groupId>com.ehsaniara</groupId>
     <artifactId>maven-repository-aws-s3</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 
     <packaging>maven-plugin</packaging>
 
