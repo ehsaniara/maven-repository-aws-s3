@@ -129,13 +129,16 @@ for Example:
             </configuration>
         </plugin>
     </plugins>
-    **<extensions>
+<span style="background-color: #FFFF00">
+<extensions>
         <extension>
             <groupId>com.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
             <version>1.2.3</version>
         </extension>
-    </extensions>**
+    </extensions>
+</span>
+    
 </build>
 ```
 
