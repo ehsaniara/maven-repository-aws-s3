@@ -14,6 +14,8 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 * [Configure By AWS Console](#Configure-By-AWS-Console)
     * [Create S3 Bucket](#Create-S3-Bucket)
     * [Create Policy](#Create-Policy)
+    * [Create IAM USER](#Create-IAM-USER)
+* [Local PC Setup](#Local-PC-Setup)
 
 
 <a name="Configure-AWS-Pre-Req"></a>
@@ -68,7 +70,7 @@ Create policy with the following json (select json tab):
 ```
 then give name to this policy. something similar to your bucket name, for example: ```my-project-com-maven-repository-policy``` and then create the policy.
 
-
+<a name="Create-IAM-USER"></a>
 ### Create IAM USER
 on Add user, select a User name and make sure you have select the "Programmatic access"
 then select "Attach existing policies directly", and in ```Filter policies``` box search for your the policy name you have just created.
@@ -79,10 +81,11 @@ then tag,review and create the user.
 create a user with (Programmatic access). 
 
 * create separate user to access your S3 bucket, for the security reason you should not give admin permission. this user should have enough access to read and write in the bucket and no more than that.
-#### Note: you can have as many user (per team member) or single user just for repo access.
+##### Note: you can have as many user (per team member) or single user just for repo access.
 
 
 
+<a name="Local-PC-Setup"></a>
 ## Local PC Setup
 If you plane to deploy you project jar from your local machine you need to follow the following steps.
 
