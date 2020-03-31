@@ -9,11 +9,10 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 
 **Installation**
 <!--ts-->
-
-* [Configure AWS Pre-Req](##Configure AWS Pre-Req)
-* [Configure By AWS CLI](##Configure By AWS CLI)
-* [Configure By AWS Console](##Configure By AWS Console)
-
+* [Configure AWS Pre-Req](#Configure AWS Pre-Req)
+* [Configure By AWS CLI](#Configure By AWS CLI)
+* [Configure By AWS Console](#Configure By AWS Console)
+<!--te-->
 
 
 ## Configure AWS Pre-Req
