@@ -55,7 +55,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
     private String pathStyleEnabled;
 
     @Override
-    public void get(String resourceName, File file) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+    public void get(String resourceName, File file) throws TransferFailedException, ResourceDoesNotExistException {
 
         Resource resource = new Resource(resourceName);
         listenerContainer.fireTransferInitiated(resource, TransferEvent.REQUEST_GET);
@@ -69,6 +69,21 @@ public class S3StorageWagon extends AbstractStorageWagon {
         } catch (Exception e) {
             listenerContainer.fireTransferError(resource, TransferEvent.REQUEST_GET, e);
             throw e;
+        }
+    }
+
+
+    @Override
+    public List<String> getFileList(String s) throws TransferFailedException, ResourceDoesNotExistException {
+        try {
+            List<String> list = s3StorageRepo.list(s);
+            list = convertS3ListToMavenFileList(list, s);
+            if (list.isEmpty()) {
+                throw new ResourceDoesNotExistException(s);
+            }
+            return list;
+        } catch (AmazonS3Exception e) {
+            throw new TransferFailedException("Could not fetch objects for prefix " + s);
         }
     }
 
@@ -93,7 +108,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
     }
 
     @Override
-    public boolean getIfNewer(String resourceName, File file, long timeStamp) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+    public boolean getIfNewer(String resourceName, File file, long timeStamp) throws TransferFailedException, ResourceDoesNotExistException {
 
         if (s3StorageRepo.newResourceAvailable(resourceName, timeStamp)) {
             get(resourceName, file);
@@ -107,7 +122,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
     public void putDirectory(File source, String destination) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
         Collection<File> allFiles = FileUtils.listFiles(source, null, true);
         String relativeDestination = destination;
-        //removes the initial .
+        // the initial deleting.
         if (destination != null && destination.startsWith(".")) {
             relativeDestination = destination.length() == 1 ? "" : destination.substring(1);
         }
@@ -122,29 +137,16 @@ public class S3StorageWagon extends AbstractStorageWagon {
         return s3StorageRepo.exists(resourceName);
     }
 
-    @Override
-    public List<String> getFileList(String s) throws TransferFailedException, ResourceDoesNotExistException {
-        try {
-            List<String> list = s3StorageRepo.list(s);
-            list = convertS3ListToMavenFileList(list, s);
-            if (list.isEmpty()) {
-                throw new ResourceDoesNotExistException(s);
-            }
-            return list;
-        } catch (AmazonS3Exception e) {
-            throw new TransferFailedException("Could not fetch objects for prefix " + s);
-        }
-    }
 
     private List<String> convertS3ListToMavenFileList(List<String> list, String path) {
         String prefix = keyResolver.resolve(s3StorageRepo.getBaseDirectory(), path);
         Set<String> folders = new HashSet<>();
         List<String> result = list.stream().map(key -> {
             String filePath = key;
-            //removes the prefix from the object path
-            if (prefix != null && prefix.length() > 0) {
+            // deleting the prefix from the object path
+            if (prefix != null && prefix.length() > 0)
                 filePath = key.substring(prefix.length() + 1);
-            }
+
             extractFolders(folders, filePath);
             return filePath;
         }).collect(Collectors.toList());
