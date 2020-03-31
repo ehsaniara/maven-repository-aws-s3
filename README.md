@@ -26,6 +26,7 @@ With the help of this plugin you can create your private Maven Repository with t
 If you plane to deploy you project jar from your local machine you need to follow the following steps.
 
 * on your local maven setup directory ```.m2``` add the following XML snaps in ```setting.xml```. 
+you basically gave permission to maven to access the S3 bucket, to be able to push or pull the files.
 
 ```xml
 <settings>
@@ -55,9 +56,8 @@ If you plane to deploy you project jar from your local machine you need to follo
   </servers>
 </settings>
 ```
-you basically gave permission to maven to access the S3 bucket, to be able to push or pull the files.
 
-on your project ```pom.xml``` add the following xml to let maven **DOWNLOAD** your project artfacet from the maven-repo 
+* on your project ```pom.xml``` add the following xml to let maven **DOWNLOAD** your project artfacet from the maven-repo 
 ```xml
 <repositories>
     <repository>
@@ -73,7 +73,7 @@ on your project ```pom.xml``` add the following xml to let maven **DOWNLOAD** yo
 ```
 ##### Note: make sure that```<id>YOUR_BUCKET_NAME-snapshot</id>``` and ```<id>YOUR_BUCKET_NAME-release</id>``` should be identical with your ```.m2/setting.xml``` ids
 
-The following xml is required if you want ,user be able to upload into maven repo., from its terminal or idea
+* The following xml is required if you want ,user be able to upload into maven repo., from its terminal or idea
 on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your project artfacet into the maven-repo 
 ```xml
 <distributionManagement>
