@@ -26,7 +26,7 @@ With the help of this plugin you can create your private Maven Repository with t
 If you plane to deploy you project jar from your local machine you need to follow the following steps.
 
 * on your local maven setup directory ```.m2``` add the following XML snaps in ```setting.xml```. 
-you basically gave permission to maven to access the S3 bucket, to be able to push or pull the files.
+you basically gave permission to maven to access the S3 bucket, to be able to push or pull the files. one for **snapshot** and one for **release**.
 
 ##### Note: create ```setting.xml``` if it's not exist in ```.m2``` directory
 ```xml
@@ -89,6 +89,56 @@ on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your
 </distributionManagement>
 
 ```
+
+And the most important one, add the following xml in your project ```pom.xml``` with in the ```<build>``` tag
+```xml
+<build>
+...
+    <extensions>
+        <extension>
+            <groupId>com.ehsaniara</groupId>
+            <artifactId>maven-repository-aws-s3</artifactId>
+            <version>1.2.3</version>
+        </extension>
+    </extensions>
+...
+</build>
+```
+
+for Example:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>build-info</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <release>11</release>
+            </configuration>
+        </plugin>
+    </plugins>
+    **<extensions>
+        <extension>
+            <groupId>com.ehsaniara</groupId>
+            <artifactId>maven-repository-aws-s3</artifactId>
+            <version>1.2.3</version>
+        </extension>
+    </extensions>**
+</build>
+```
+
 
 
 ## CI/CD Pipeline Setup
