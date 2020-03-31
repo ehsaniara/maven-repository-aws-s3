@@ -3,7 +3,7 @@
 ![AWS S3 and Maven](maven-repository-aws-s3-0.png)
 
 **Introduction**
-With the help of this maven-plugin you can create your own private Maven Repository with the essential features. There are many commercial products out there, fro example: [Nexus](https://help.sonatype.com/repomanager3/formats/maven-repositories), [JFrog](https://jfrog.com/artifactory/) and ets.., but the drawback is they required more resources (Compute and storage) and some are costly. Where you can simply setup in your AWS cloud with much much less cost.
+With the help of this maven-plugin you can create your own private Maven Repository with the essential features. There are many commercial products out there, for example: [Nexus](https://help.sonatype.com/repomanager3/formats/maven-repositories), [JFrog](https://jfrog.com/artifactory/) and ets.., but the drawback is they required more resources (Compute and storage) and some are costly. Where you can simply setup in your AWS cloud with much much less cost.
  
 ![High Level Arch.](maven-repository-aws-s3-1.png)
 
@@ -12,19 +12,37 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 
 
 ## Configure AWS Pre-Req
-[missing..]
+First thing first, I assume you already have AWS account and with (Preferably Admin permission) permission to create IAM User, -Rule and -Policy.
 
-
-### Create IAM
-[missing..]
 
 
 ### Create S3 Bucket
 [missing..]
 
+create a AWS S3 bucket, try to have unique name from you domain, for example: ```my-project-com-maven-repository```.
+##### Note: Block all public access on the bucket
+and also create 2 folder of ```release``` and ```snapshot``` in it.
 
-### Security Concerns
+
+### Create IAM
 [missing..]
+
+create a user with (Programmatic access). 
+
+* create separate user to access your S3 bucket, for the security reason you should not give admin permission. this user should have enough access to read and write in the bucket and no more than that.
+#### Note: you can have as many user (per team member) or single user just for repo access.
+
+You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
+
+### AWS CLI:
+
+#### Note: make sure that you have latest AWS CLI installed in your PC.
+#### Note: make sure that you are in your project root directory and have permission to create a file.
+
+```shell script
+curl -s https://github.com/ehsaniara/maven-repository-aws-s3/aws-s3-setup.sh | bash /dev/stdin arg1 arg2
+```
+
 
 
 ## Local PC Setup
