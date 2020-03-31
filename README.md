@@ -71,7 +71,7 @@ on your project ```pom.xml``` add the following xml to let maven **DOWNLOAD** yo
 </repositories>
 
 ```
-#### Note: ```<id>YOUR_BUCKET_NAME-snapshot</id>``` and ```<id>YOUR_BUCKET_NAME-release</id>``` should be identical with your ```.m2/setting.xml``` ids
+##### Note: make sure that```<id>YOUR_BUCKET_NAME-snapshot</id>``` and ```<id>YOUR_BUCKET_NAME-release</id>``` should be identical with your ```.m2/setting.xml``` ids
 
 The following xml is required if you want ,user be able to upload into maven repo., from its terminal or idea
 on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your project artfacet into the maven-repo 
