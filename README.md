@@ -27,6 +27,7 @@ on your local maven setup directory ```.m2``` add the following XML snaps in ```
 <settings>
   <servers>
     ...
+    ...
     <server>
       <id>YOUR_BUCKET_NAME-snapshot</id>
       <username>AWS_ACCESS_KEY_ID</username>
@@ -46,11 +47,12 @@ on your local maven setup directory ```.m2``` add the following XML snaps in ```
       </configuration>
     </server>
     ....
+    ....
   </servers>
 </settings>
 ```
 
-##### Note: create ```setting.xml``` if it's not exist
+##### Note: create ```setting.xml``` if it's not exist in ```.m2``` directory
 
 
 ## CI/CD Pipeline Setup
