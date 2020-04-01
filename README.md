@@ -1,6 +1,7 @@
 # maven-repository-aws-s3
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)
 
 
 ![AWS S3 and Maven](material/maven-repository-aws-s3-0.png)
