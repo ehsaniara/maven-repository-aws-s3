@@ -163,7 +163,7 @@ And the most important one, add the following xml in your project ```pom.xml``` 
 ...
     <extensions>
         <extension>
-            <groupId>com.ehsaniara</groupId>
+            <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
             <version>1.2.3</version>
         </extension>
@@ -200,7 +200,7 @@ for Example:
 
     <extensions>
         <extension>
-            <groupId>com.ehsaniara</groupId>
+            <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
             <version>1.2.3</version>
         </extension>
