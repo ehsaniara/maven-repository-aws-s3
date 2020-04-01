@@ -1,5 +1,8 @@
 # maven-repository-aws-s3
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+
 ![AWS S3 and Maven](material/maven-repository-aws-s3-0.png)
 
 **Introduction**
@@ -90,6 +93,8 @@ create a user with (Programmatic access).
 
 <a name="Local-PC-Setup"></a>
 ## Local PC Setup
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 If you plane to deploy you project jar from your local machine you need to follow the following steps.
 
 * on your local maven setup directory ```.m2``` add the following XML snaps in ```setting.xml```. 
