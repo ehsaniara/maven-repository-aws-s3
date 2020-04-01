@@ -20,19 +20,26 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import lombok.extern.java.Log;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 /**
  * S3Connect s3Connect
  */
+@Log
 public class S3Connect {
 
-    private static final Logger LOGGER = Logger.getLogger(S3Connect.class.getName());
-
+    /**
+     * @param authenticationInfo authenticationInfo
+     * @param region             region
+     * @param endpoint           endpoint
+     * @param pathStyle          pathStyle
+     * @return AmazonS3
+     * @throws AuthenticationException AuthenticationException
+     */
     public static AmazonS3 connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
 
         AmazonS3ClientBuilder builder = null;
@@ -41,7 +48,7 @@ public class S3Connect {
 
             AmazonS3 amazonS3 = builder.build();
 
-            LOGGER.finer(String.format("Connected to S3 using bucket %s.", endpoint.get()));
+            log.finer(String.format("Connected to S3 using bucket %s.", endpoint.get()));
 
             return amazonS3;
         } catch (SdkClientException e) {
@@ -63,6 +70,13 @@ public class S3Connect {
         }
     }
 
+    /**
+     * @param authenticationInfo authenticationInfo
+     * @param region             region
+     * @param endpoint           endpoint
+     * @param pathStyle          pathStyle
+     * @return AmazonS3ClientBuilder
+     */
     private static AmazonS3ClientBuilder createAmazonS3ClientBuilder(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) {
         final S3RegionProviderOrder regionProvider = new S3RegionProviderOrder(region);
 

@@ -22,22 +22,22 @@ public class KeyResolver {
 
         StringBuilder builder = new StringBuilder();
 
-        for(String s : paths) {
+        for (String s : paths) {
 
-            if(s.startsWith("/")) s = s.replaceFirst("/","");
+            if (s.startsWith("/")) s = s.replaceFirst("/", "");
             builder.append(s);
-            if(!s.isEmpty() && !s.endsWith("/")) builder.append("/");
+            if (!s.isEmpty() && !s.endsWith("/")) builder.append("/");
         }
 
         return replaceLast(builder);
     }
 
     private String replaceLast(StringBuilder stringBuilder) {
-        if(stringBuilder.length() == 0) {
+        if (stringBuilder.length() == 0) {
             return "";
         }
 
-        stringBuilder.replace(stringBuilder.lastIndexOf("/"), stringBuilder.lastIndexOf("/") + 1, "" );
+        stringBuilder.replace(stringBuilder.lastIndexOf("/"), stringBuilder.lastIndexOf("/") + 1, "");
         return stringBuilder.toString();
     }
 

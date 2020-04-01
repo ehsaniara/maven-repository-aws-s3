@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.ehsaniara</groupId>
     <artifactId>maven-repository-aws-s3</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.5-SNAPSHOT</version>
 
     <packaging>maven-plugin</packaging>
 
@@ -39,18 +40,11 @@
         <url>https://github.com/ehsaniara/maven-repository-aws-s3/issues</url>
     </issueManagement>
 
-    <ciManagement>
-        <system>Travis</system>
-        <url>https://travis-ci.org/ehsaniara/maven-repository-aws-s3</url>
-    </ciManagement>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <aws.version>1.11.743</aws.version>
-        <apache-httpcore>4.4.10</apache-httpcore>
-        <commons-io.version>2.6</commons-io.version>
     </properties>
 
     <dependencies>
@@ -75,7 +69,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -86,7 +80,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>${apache-httpcore}</version>
+            <version>4.4.10</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>

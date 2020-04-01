@@ -20,20 +20,19 @@ import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import lombok.extern.java.Log;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
+@Log
 public class AwsCredentialsFactory {
-
-    private static final Logger LOGGER = Logger.getLogger(AwsCredentialsFactory.class.getName());
 
     public AWSCredentialsProvider connect(AuthenticationInfo authenticationInfo) {
         if (Objects.isNull(authenticationInfo)) {
             return new DefaultAWSCredentialsProviderChain();
         } else {
-            LOGGER.info("AWS Connection By AWSStaticCredentialsProvider class");
+            log.info("AWS Connection By AWSStaticCredentialsProvider class");
             return new AWSStaticCredentialsProvider(new BasicAWSCredentials(authenticationInfo.getUserName(), authenticationInfo.getPassword()));
         }
     }

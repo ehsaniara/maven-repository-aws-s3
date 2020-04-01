@@ -24,6 +24,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class PrefixKeysIterator implements Iterator<String> {
@@ -46,26 +47,27 @@ public class PrefixKeysIterator implements Iterator<String> {
         throw new UnsupportedOperationException();
     }
 
-    @Override public void forEachRemaining(Consumer<? super String> action) {
+    @Override
+    public void forEachRemaining(Consumer<? super String> action) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean hasNext() {
-        if(currentKeys.size()>0) {
+        if (currentKeys.size() > 0) {
             return true;
         }
 
         fetchKeysIfExist();
-        return currentKeys.size()>0;
+        return currentKeys.size() > 0;
     }
 
     private void fetchKeysIfExist() {
-        if(tempListing==null) {
+        if (Objects.isNull(tempListing)) {
             tempListing = getObjectListing();
             currentKeys.addAll(tempListing.getObjectSummaries());
         } else {
-            if(tempListing.isTruncated()) {
+            if (tempListing.isTruncated()) {
                 tempListing = amazonS3.listNextBatchOfObjects(tempListing);
                 currentKeys.addAll(tempListing.getObjectSummaries());
             }
@@ -75,13 +77,13 @@ public class PrefixKeysIterator implements Iterator<String> {
     private ObjectListing getObjectListing() {
 
         return amazonS3.listObjects(new ListObjectsRequest()
-                                            .withBucketName(bucket)
-                                            .withPrefix(prefix));
+                .withBucketName(bucket)
+                .withPrefix(prefix));
     }
 
     @Override
     public String next() {
-        if(!hasNext()) {
+        if (!hasNext()) {
             return null;
         }
 

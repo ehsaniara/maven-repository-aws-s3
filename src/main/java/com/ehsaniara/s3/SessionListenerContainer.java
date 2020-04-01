@@ -39,16 +39,34 @@ public interface SessionListenerContainer {
      */
     boolean hasSessionListener(SessionListener sessionListener);
 
+    /**
+     * void fireSessionOpening
+     */
     void fireSessionOpening();
 
+    /**
+     * void fireSessionOpened
+     */
     void fireSessionOpened();
 
+    /**
+     * void fireSessionDisconnecting
+     */
     void fireSessionDisconnecting();
 
+    /**
+     * void fireSessionDisconnected
+     */
     void fireSessionDisconnected();
 
+    /**
+     * void fireSessionLoggedIn
+     */
     void fireSessionLoggedIn();
 
+    /**
+     * void fireSessionLoggedOff
+     */
     void fireSessionLoggedOff();
 
 }

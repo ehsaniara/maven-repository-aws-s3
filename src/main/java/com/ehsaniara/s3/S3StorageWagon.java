@@ -19,6 +19,7 @@ package com.ehsaniara.s3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.wagon.PathUtils;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
@@ -37,11 +38,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Setter
 @Getter
+@Log
 public class S3StorageWagon extends AbstractStorageWagon {
 
     private S3StorageRepo s3StorageRepo;
@@ -50,7 +51,6 @@ public class S3StorageWagon extends AbstractStorageWagon {
     private String region;
     private Boolean publicRepository;
 
-    private static final Logger LOGGER = Logger.getLogger(S3StorageWagon.class.getName());
     private String endpoint;
     private String pathStyleEnabled;
 
@@ -83,7 +83,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
             }
             return list;
         } catch (AmazonS3Exception e) {
-            throw new TransferFailedException("Could not fetch objects for prefix " + s);
+            throw new TransferFailedException("Could not fetch objects with prefix: " + s);
         }
     }
 
@@ -92,7 +92,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
 
         Resource resource = new Resource(resourceName);
 
-        LOGGER.log(Level.FINER, String.format("Uploading file %s to %s", file.getAbsolutePath(), resourceName));
+        log.log(Level.FINER, String.format("Uploading file %s to %s", file.getAbsolutePath(), resourceName));
 
         listenerContainer.fireTransferInitiated(resource, TransferEvent.REQUEST_PUT);
         listenerContainer.fireTransferStarted(resource, TransferEvent.REQUEST_PUT, file);
@@ -148,6 +148,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
                 filePath = key.substring(prefix.length() + 1);
 
             extractFolders(folders, filePath);
+
             return filePath;
         }).collect(Collectors.toList());
         result.addAll(folders);
@@ -182,7 +183,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
 
         final String directory = stringBuilder.toString();
 
-        LOGGER.log(Level.FINER, String.format("Opening connection for bucket %s and directory %s", bucket, directory));
+        log.log(Level.FINER, String.format("Opening connection for bucket %s and directory %s", bucket, directory));
         s3StorageRepo = new S3StorageRepo(bucket, directory, new PublicReadProperty(publicRepository));
         s3StorageRepo.connect(authenticationInfo, region, new EndpointProperty(endpoint), new PathStyleEnabledProperty(pathStyleEnabled));
 

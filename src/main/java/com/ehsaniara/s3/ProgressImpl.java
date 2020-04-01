@@ -30,7 +30,8 @@ public class ProgressImpl implements Progress {
         this.listenerContainer = listenerContainer;
     }
 
-    @Override public void progress(byte[] buffer, int length) {
+    @Override
+    public void progress(byte[] buffer, int length) {
         listenerContainer.fireTransferProgress(this.resource, this.requestType, buffer, length);
     }
 }

@@ -18,6 +18,8 @@ package com.ehsaniara.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import lombok.Getter;
+import lombok.extern.java.Log;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
@@ -31,37 +33,19 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+@Log
 public class S3StorageRepo {
 
+    @Getter
     private final String bucket;
+    @Getter
     private final String baseDirectory;
 
     private final KeyResolver keyResolver = new KeyResolver();
 
     private AmazonS3 amazonS3;
     private PublicReadProperty publicReadProperty;
-
-    private static final Logger LOGGER = Logger.getLogger(S3StorageRepo.class.getName());
-
-    public S3StorageRepo(String bucket) {
-        this.bucket = bucket;
-        this.baseDirectory = "";
-        this.publicReadProperty = new PublicReadProperty(false);
-    }
-
-    public S3StorageRepo(String bucket, PublicReadProperty publicReadProperty) {
-        this.bucket = bucket;
-        this.baseDirectory = "";
-        this.publicReadProperty = publicReadProperty;
-    }
-
-    public S3StorageRepo(String bucket, String baseDirectory) {
-        this.bucket = bucket;
-        this.baseDirectory = baseDirectory;
-        this.publicReadProperty = new PublicReadProperty(false);
-    }
 
     public S3StorageRepo(String bucket, String baseDirectory, PublicReadProperty publicReadProperty) {
         this.bucket = bucket;
@@ -85,13 +69,15 @@ public class S3StorageRepo {
             } catch (AmazonS3Exception e) {
                 throw new ResourceDoesNotExistException("Resource not exist");
             }
-            destination.getParentFile().mkdirs();//make sure the folder exists or the outputStream will fail.
+            //make sure the folder exists or the outputStream will fail.
+            destination.getParentFile().mkdirs();
+            //
             try (OutputStream outputStream = new ProgressFileOutputStream(destination, progress);
                  InputStream inputStream = s3Object.getObjectContent()) {
                 IOUtils.copy(inputStream, outputStream);
             }
         } catch (AmazonS3Exception | IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not transfer file", e);
+            log.log(Level.SEVERE, "Could not transfer file", e);
             throw new TransferFailedException("Could not download resource " + key);
         }
     }
@@ -107,7 +93,7 @@ public class S3StorageRepo {
                 amazonS3.putObject(putObjectRequest);
             }
         } catch (AmazonS3Exception | IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not transfer file ", e);
+            log.log(Level.SEVERE, "Could not transfer file ", e);
             throw new TransferFailedException("Could not transfer file " + file.getName());
         }
     }
@@ -122,7 +108,7 @@ public class S3StorageRepo {
 
         final String key = resolveKey(resourceName);
 
-        LOGGER.log(Level.FINER, String.format("Checking if new key %s exists", key));
+        log.log(Level.FINER, String.format("Checking if new key %s exists", key));
 
         try {
             ObjectMetadata objectMetadata = amazonS3.getObjectMetadata(bucket, key);
@@ -130,8 +116,8 @@ public class S3StorageRepo {
             long updated = objectMetadata.getLastModified().getTime();
             return updated > timeStamp;
         } catch (AmazonS3Exception e) {
-            LOGGER.log(Level.SEVERE, String.format("Could not retrieve %s", key), e);
-            throw new ResourceDoesNotExistException("Could not retrieve key " + key);
+            log.log(Level.SEVERE, String.format("Could not find %s", key), e);
+            throw new ResourceDoesNotExistException("Could not find key " + key);
         }
     }
 
@@ -150,7 +136,7 @@ public class S3StorageRepo {
 
     private void applyPublicRead(PutObjectRequest putObjectRequest) {
         if (publicReadProperty.get()) {
-            LOGGER.info("Public read was set to true");
+            log.info("Public read was set to true");
             putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
         }
     }
@@ -183,14 +169,6 @@ public class S3StorageRepo {
 
     private String resolveKey(String path) {
         return keyResolver.resolve(baseDirectory, path);
-    }
-
-    public String getBucket() {
-        return bucket;
-    }
-
-    public String getBaseDirectory() {
-        return baseDirectory;
     }
 
 

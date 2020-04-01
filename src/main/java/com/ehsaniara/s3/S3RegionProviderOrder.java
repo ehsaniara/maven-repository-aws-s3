@@ -18,6 +18,9 @@ package com.ehsaniara.s3;
 
 import com.amazonaws.regions.*;
 
+/**
+ * this class extends AwsRegionProviderChain
+ */
 public class S3RegionProviderOrder extends AwsRegionProviderChain {
 
     public S3RegionProviderOrder(final String providedRegion) {

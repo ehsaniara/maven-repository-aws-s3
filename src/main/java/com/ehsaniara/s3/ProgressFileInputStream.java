@@ -25,7 +25,7 @@ public final class ProgressFileInputStream extends FileInputStream {
     private final Progress progress;
     private long byteLeft;
 
-    public ProgressFileInputStream(File file, Progress progress) throws IOException{
+    public ProgressFileInputStream(File file, Progress progress) throws IOException {
         super(file);
         this.progress = progress;
         resetByteLeft();
@@ -44,33 +44,34 @@ public final class ProgressFileInputStream extends FileInputStream {
     @Override
     public int read() throws IOException {
         int b = super.read();
-        if(b != -1){
+        if (b != -1) {
             this.progress.progress(new byte[]{(byte) b}, 1);
             byteLeft--;
-        }//else we try to read but it was the end of the stream so nothing to report
+        }
+        //I try to read but it was the end of the stream so nothing to report
         return b;
     }
 
     @Override
-    public int read(byte b[]) throws IOException {
+    public int read(byte[] b) throws IOException {
         int count = super.read(b);
         if (count != -1) {
             this.progress.progress(b, b.length);
             byteLeft -= b.length;
-        }else{//end of the stream
+        } else {//end of the stream
             this.progress.progress(b, Math.toIntExact(byteLeft));
         }
         return count;
     }
 
     @Override
-    public int read(byte b[], int off, int len) throws IOException {
+    public int read(byte[] b, int off, int len) throws IOException {
         int count = super.read(b, off, len);
         if (off == 0) {
             if (count != -1) {
                 this.progress.progress(b, count);
                 byteLeft -= count;
-            }else{//end of the stream
+            } else {//end of the stream
                 this.progress.progress(b, Math.toIntExact(byteLeft));
             }
         } else {
@@ -79,7 +80,7 @@ public final class ProgressFileInputStream extends FileInputStream {
                 System.arraycopy(b, off, bytes, 0, count);
                 this.progress.progress(bytes, len);
                 byteLeft -= count;
-            }else{//end of the stream
+            } else {//end of the stream
                 byte[] bytes = new byte[Math.toIntExact(byteLeft)];
                 System.arraycopy(b, off, bytes, 0, Math.toIntExact(byteLeft));
                 this.progress.progress(b, Math.toIntExact(byteLeft));

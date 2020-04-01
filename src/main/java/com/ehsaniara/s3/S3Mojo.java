@@ -23,7 +23,6 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.wagon.authentication.AuthenticationException;
@@ -38,7 +37,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Mojo(name = "s3-download")
-public class S3DownloadMojo extends AbstractMojo {
+public class S3Mojo extends AbstractMojo {
 
     @Parameter(property = "s3-download.bucket")
     private String bucket;
@@ -54,12 +53,12 @@ public class S3DownloadMojo extends AbstractMojo {
 
     private static final String DIRECTORY_CONTENT_TYPE = "application/x-directory";
 
-    private static final Logger LOGGER = Logger.getLogger(S3DownloadMojo.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(S3Mojo.class.getName());
 
-    public S3DownloadMojo() {
+    public S3Mojo() {
     }
 
-    public S3DownloadMojo(String bucket, List<String> keys, String downloadPath, String region) {
+    public S3Mojo(String bucket, List<String> keys, String downloadPath, String region) {
         this.bucket = bucket;
         this.keys = keys;
         this.downloadPath = downloadPath;
@@ -67,7 +66,7 @@ public class S3DownloadMojo extends AbstractMojo {
     }
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         AmazonS3 amazonS3;
 
         try {

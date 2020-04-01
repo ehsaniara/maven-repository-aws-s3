@@ -36,10 +36,10 @@ public class ListenerContainerImpl implements ListenerContainer {
 
     @Override
     public void addTransferListener(TransferListener transferListener) {
-        if(transferListener==null) {
+        if (transferListener == null) {
             throw new NullPointerException();
         }
-        if(!transferListeners.contains(transferListener)) {
+        if (!transferListeners.contains(transferListener)) {
             transferListeners.add(transferListener);
         }
     }
@@ -56,32 +56,34 @@ public class ListenerContainerImpl implements ListenerContainer {
 
     @Override
     public void fireTransferInitiated(Resource resource, int requestType) {
-        TransferEvent transferEvent = new TransferEvent(this.wagon,resource,TransferEvent.TRANSFER_INITIATED,requestType);
-        transferListeners.forEach(tl->tl.transferInitiated(transferEvent));
+        TransferEvent transferEvent = new TransferEvent(this.wagon, resource, TransferEvent.TRANSFER_INITIATED, requestType);
+        transferListeners.forEach(tl -> tl.transferInitiated(transferEvent));
     }
 
     @Override
     public void fireTransferStarted(Resource resource, int requestType, File localFile) {
         resource.setContentLength(localFile.length());
         resource.setLastModified(localFile.lastModified());
-        TransferEvent transferEvent = new TransferEvent(this.wagon,resource,TransferEvent.TRANSFER_STARTED,requestType);
+        TransferEvent transferEvent = new TransferEvent(this.wagon, resource, TransferEvent.TRANSFER_STARTED, requestType);
         transferEvent.setLocalFile(localFile);
-        transferListeners.forEach(tl->tl.transferStarted(transferEvent));
+        transferListeners.forEach(tl -> tl.transferStarted(transferEvent));
     }
 
     @Override
     public void fireTransferProgress(Resource resource, int requestType, byte[] buffer, int length) {
         TransferEvent transferEvent = new TransferEvent(this.wagon, resource, TransferEvent.TRANSFER_PROGRESS, requestType);
-        transferListeners.forEach(tl->tl.transferProgress(transferEvent,buffer,length));
+        transferListeners.forEach(tl -> tl.transferProgress(transferEvent, buffer, length));
     }
 
-    @Override public void fireTransferCompleted(Resource resource, int requestType) {
+    @Override
+    public void fireTransferCompleted(Resource resource, int requestType) {
         TransferEvent transferEvent = new TransferEvent(this.wagon, resource, TransferEvent.TRANSFER_COMPLETED, requestType);
-        transferListeners.forEach(tl->tl.transferCompleted(transferEvent));
+        transferListeners.forEach(tl -> tl.transferCompleted(transferEvent));
     }
 
-    @Override public void fireTransferError(Resource resource, int requestType, Exception exception) {
+    @Override
+    public void fireTransferError(Resource resource, int requestType, Exception exception) {
         TransferEvent transferEvent = new TransferEvent(this.wagon, resource, exception, requestType);
-        transferListeners.forEach(tl->tl.transferError(transferEvent));
+        transferListeners.forEach(tl -> tl.transferError(transferEvent));
     }
 }

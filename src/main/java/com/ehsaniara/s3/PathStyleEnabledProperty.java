@@ -28,11 +28,11 @@ public class PathStyleEnabledProperty {
 
     public boolean get() {
         if (pathStyleEnabled != null) {
-            return Boolean.valueOf(pathStyleEnabled);
+            return Boolean.parseBoolean(pathStyleEnabled);
         }
         String pathStyleEnv = System.getProperty(PATH_STYLE_PROP);
         if (pathStyleEnv != null) {
-            return Boolean.valueOf(pathStyleEnv);
+            return Boolean.parseBoolean(pathStyleEnv);
         }
         return false;
     }

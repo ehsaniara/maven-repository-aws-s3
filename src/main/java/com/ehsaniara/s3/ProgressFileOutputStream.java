@@ -37,19 +37,19 @@ public final class ProgressFileOutputStream extends FileOutputStream {
     }
 
     @Override
-    public void write(byte b[]) throws IOException {
-        super.write(b);
-        this.progress.progress(b, b.length);
+    public void write(byte[] bytes) throws IOException {
+        super.write(bytes);
+        this.progress.progress(bytes, bytes.length);
     }
 
     @Override
-    public void write(byte b[], int off, int len) throws IOException {
-        super.write(b, off, len);
+    public void write(byte[] byteArray, int off, int len) throws IOException {
+        super.write(byteArray, off, len);
         if (off == 0) {
-            this.progress.progress(b, len);
+            this.progress.progress(byteArray, len);
         } else {
             byte[] bytes = new byte[len];
-            System.arraycopy(b, off, bytes, 0, len);
+            System.arraycopy(byteArray, off, bytes, 0, len);
             this.progress.progress(bytes, len);
         }
     }

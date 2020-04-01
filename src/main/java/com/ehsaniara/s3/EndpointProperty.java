@@ -17,33 +17,31 @@
 package com.ehsaniara.s3;
 
 
+import java.util.Objects;
+
 public class EndpointProperty {
 
+    //get it from Environment var
     private static final String S3_ENDPOINT = "S3_ENDPOINT";
     private String endpoint;
 
     public EndpointProperty(String endpoint) {
-
         this.endpoint = endpoint;
     }
 
-    public static final EndpointProperty empty() {
+    public static EndpointProperty empty() {
         return new EndpointProperty(null);
     }
 
     public boolean isPresent() {
-        return endpoint != null || System.getProperty(S3_ENDPOINT) != null;
+        return Objects.nonNull(endpoint) || System.getProperty(S3_ENDPOINT) != null;
     }
 
     public String get() {
-        if (endpoint != null) {
+        if (Objects.nonNull(endpoint)) {
             return endpoint;
         }
-        String endpointEnv = System.getProperty(S3_ENDPOINT);
-        if (endpointEnv != null) {
-            return endpointEnv;
-        }
-        return null;
+        return System.getProperty(S3_ENDPOINT);
     }
 
 }
