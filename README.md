@@ -165,7 +165,7 @@ And the most important one, add the following xml in your project ```pom.xml``` 
         <extension>
             <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
-            <version>1.2.9</version>
+            <version>1.2.10</version>
         </extension>
     </extensions>
 ...
@@ -202,7 +202,7 @@ for Example:
         <extension>
             <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
-            <version>1.2.9</version>
+            <version>1.2.10</version>
         </extension>
     </extensions>
     
