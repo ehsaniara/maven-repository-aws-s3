@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![License](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
 
 ![AWS S3 and Maven](material/maven-repository-aws-s3-0.png)
@@ -95,6 +96,7 @@ create a user with (Programmatic access).
 <a name="Local-PC-Setup"></a>
 ## Local PC Setup
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
 If you plane to deploy you project jar from your local machine you need to follow the following steps.
 
@@ -164,6 +166,9 @@ on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your
 ```
 
 And the most important one, add the following xml in your project ```pom.xml``` with in the ```<build>``` tag
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
+
 ```xml
 <build>
 ...
@@ -179,6 +184,8 @@ And the most important one, add the following xml in your project ```pom.xml``` 
 ```
 
 for Example:
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
+
 ```xml
 <build>
     <plugins>
