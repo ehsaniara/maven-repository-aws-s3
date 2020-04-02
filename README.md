@@ -1,8 +1,9 @@
 # maven-repository-aws-s3
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.ehsaniara/maven-repository-aws-s3.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.ehsaniara%22%20AND%20a:%22maven-repository-aws-s3%22)
 [![License](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
 
 ![AWS S3 and Maven](material/maven-repository-aws-s3-0.png)
@@ -24,6 +25,11 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 * [CI/CD Pipeline Setup](#CI-CD-Pipeline-Setup)
 * [Reference](#Reference)
 
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
+[![License](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)](https://travis-ci.org/ehsaniara/maven-repository-aws-s3.svg?branch=master)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.ehsaniara/maven-repository-aws-s3.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.ehsaniara%22%20AND%20a:%22maven-repository-aws-s3%22)
 
 <a name="Configure-AWS-Pre-Req"></a>
 ## Configure AWS Pre-Req
@@ -96,7 +102,8 @@ create a user with (Programmatic access).
 <a name="Local-PC-Setup"></a>
 ## Local PC Setup
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.ehsaniara/maven-repository-aws-s3.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.ehsaniara%22%20AND%20a:%22maven-repository-aws-s3%22)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
 If you plane to deploy you project jar from your local machine you need to follow the following steps.
 
@@ -167,7 +174,7 @@ on your project ```pom.xml``` add the following xml to let maven **UPLOAD** your
 
 And the most important one, add the following xml in your project ```pom.xml``` with in the ```<build>``` tag
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
 ```xml
 <build>
@@ -184,7 +191,8 @@ And the most important one, add the following xml in your project ```pom.xml``` 
 ```
 
 for Example:
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
 ```xml
 <build>
