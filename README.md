@@ -242,7 +242,7 @@ mvn deploy
 
 <a name="CI-CD-Pipeline-Setup"></a>
 ## CI/CD Pipeline Setup
-[missing..]
+[updating soon..]
 
 
 <a name="Reference"></a>
