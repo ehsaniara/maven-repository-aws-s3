@@ -37,6 +37,8 @@ First thing first, I assume you already have AWS account and with (Preferably Ad
 
 You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 
+##### NOTE: Java 11 supported
+
 <a name="Configure-By-AWS-CLI"></a>
 ## Configure By AWS CLI:
 
