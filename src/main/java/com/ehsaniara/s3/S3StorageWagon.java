@@ -54,6 +54,12 @@ public class S3StorageWagon extends AbstractStorageWagon {
     private String endpoint;
     private String pathStyleEnabled;
 
+    /**
+     * @param resourceName resourceName
+     * @param file         file
+     * @throws TransferFailedException       TransferFailedException
+     * @throws ResourceDoesNotExistException ResourceDoesNotExistException
+     */
     @Override
     public void get(String resourceName, File file) throws TransferFailedException, ResourceDoesNotExistException {
 
@@ -73,6 +79,12 @@ public class S3StorageWagon extends AbstractStorageWagon {
     }
 
 
+    /**
+     * @param s file String
+     * @return list of paths
+     * @throws TransferFailedException       TransferFailedException
+     * @throws ResourceDoesNotExistException ResourceDoesNotExistException
+     */
     @Override
     public List<String> getFileList(String s) throws TransferFailedException, ResourceDoesNotExistException {
         try {
@@ -87,6 +99,13 @@ public class S3StorageWagon extends AbstractStorageWagon {
         }
     }
 
+    /**
+     * @param file         File
+     * @param resourceName String
+     * @throws TransferFailedException       TransferFailedException
+     * @throws ResourceDoesNotExistException it's not really needed
+     * @throws AuthorizationException        it's not really needed
+     */
     @Override
     public void put(File file, String resourceName) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
 
@@ -107,6 +126,14 @@ public class S3StorageWagon extends AbstractStorageWagon {
         }
     }
 
+    /**
+     * @param resourceName String
+     * @param file         File
+     * @param timeStamp    long
+     * @return just the boolean type
+     * @throws TransferFailedException       TransferFailedException
+     * @throws ResourceDoesNotExistException ResourceDoesNotExistException
+     */
     @Override
     public boolean getIfNewer(String resourceName, File file, long timeStamp) throws TransferFailedException, ResourceDoesNotExistException {
 
@@ -118,6 +145,17 @@ public class S3StorageWagon extends AbstractStorageWagon {
         return false;
     }
 
+    /**
+     * @param source      File
+     * @param destination String
+     * @throws TransferFailedException       TransferFailedException
+     * @throws ResourceDoesNotExistException ResourceDoesNotExistException
+     * @throws AuthorizationException        AuthorizationException
+     * @see TransferFailedException
+     * <p>Also related to:</p>
+     * @see ResourceDoesNotExistException
+     * @see AuthorizationException
+     */
     @Override
     public void putDirectory(File source, String destination) throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
         Collection<File> allFiles = FileUtils.listFiles(source, null, true);
@@ -132,12 +170,21 @@ public class S3StorageWagon extends AbstractStorageWagon {
         }
     }
 
+    /**
+     * @param resourceName String of resourceName
+     * @return boolean type
+     */
     @Override
     public boolean resourceExists(String resourceName) {
         return s3StorageRepo.exists(resourceName);
     }
 
 
+    /**
+     * @param list list of String as list
+     * @param path just the path
+     * @return List of String
+     */
     private List<String> convertS3ListToMavenFileList(List<String> list, String path) {
         String prefix = keyResolver.resolve(s3StorageRepo.getBaseDirectory(), path);
         Set<String> folders = new HashSet<>();
@@ -155,6 +202,10 @@ public class S3StorageWagon extends AbstractStorageWagon {
         return result;
     }
 
+    /**
+     * @param folders  folders set of strings
+     * @param filePath just filePath
+     */
     private void extractFolders(Set<String> folders, String filePath) {
         if (filePath.contains("/")) {
             String folder = filePath.substring(0, filePath.lastIndexOf('/'));
@@ -167,6 +218,15 @@ public class S3StorageWagon extends AbstractStorageWagon {
         }
     }
 
+    /**
+     * @param repository         Repository:repository
+     * @param authenticationInfo AuthenticationInfo:authenticationInfo
+     * @param proxyInfoProvider  proxyInfoProvider
+     * @throws AuthenticationException AuthenticationException
+     * @see AuthenticationInfo
+     * @see ProxyInfoProvider
+     * @see AuthenticationException
+     */
     @Override
     public void connect(Repository repository, AuthenticationInfo authenticationInfo, ProxyInfoProvider proxyInfoProvider) throws AuthenticationException {
 
