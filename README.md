@@ -99,8 +99,6 @@ create a user with (Programmatic access).
 * create separate user to access your S3 bucket, for the security reason you should not give admin permission. this user should have enough access to read and write in the bucket and no more than that.
 ##### Note: you can have as many user (per team member) or single user just for repo access.
 
-
-
 <a name="Local-PC-Setup"></a>
 ## Local PC Setup
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
