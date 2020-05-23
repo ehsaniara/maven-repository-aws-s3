@@ -19,24 +19,50 @@ package com.ehsaniara.s3;
 
 import java.util.Objects;
 
+/**
+ * <p>EndpointProperty class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class EndpointProperty {
 
     //get it from Environment var
     private static final String S3_ENDPOINT = "S3_ENDPOINT";
     private String endpoint;
 
+    /**
+     * <p>Constructor for EndpointProperty.</p>
+     *
+     * @param endpoint a {@link java.lang.String} object.
+     */
     public EndpointProperty(String endpoint) {
         this.endpoint = endpoint;
     }
 
+    /**
+     * <p>empty.</p>
+     *
+     * @return a {@link com.ehsaniara.s3.EndpointProperty} object.
+     */
     public static EndpointProperty empty() {
         return new EndpointProperty(null);
     }
 
+    /**
+     * <p>isPresent.</p>
+     *
+     * @return a boolean.
+     */
     public boolean isPresent() {
         return Objects.nonNull(endpoint) || System.getProperty(S3_ENDPOINT) != null;
     }
 
+    /**
+     * <p>get.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String get() {
         if (Objects.nonNull(endpoint)) {
             return endpoint;

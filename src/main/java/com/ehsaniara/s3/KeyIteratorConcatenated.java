@@ -20,14 +20,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * <p>KeyIteratorConcatenated class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class KeyIteratorConcatenated<T> implements Iterator<T> {
 
     private final List<Iterator<T>> iterators;
 
+    /**
+     * <p>Constructor for KeyIteratorConcatenated.</p>
+     *
+     * @param iterators a {@link java.util.List} object.
+     */
     public KeyIteratorConcatenated(List<Iterator<T>> iterators) {
         this.iterators = iterators;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         if (iterators.size() > 0) {
@@ -42,6 +54,7 @@ public class KeyIteratorConcatenated<T> implements Iterator<T> {
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public T next() {
         if (!hasNext()) {
@@ -53,11 +66,13 @@ public class KeyIteratorConcatenated<T> implements Iterator<T> {
         return stringIterator.next();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void forEachRemaining(Consumer<? super T> action) {
         throw new UnsupportedOperationException();

@@ -18,6 +18,12 @@ package com.ehsaniara.s3;
 
 import java.util.Objects;
 
+/**
+ * <p>PublicReadProperty class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class PublicReadProperty {
 
     // first priority: from .m2/setting.xml configuration parameters: <publicRepository>false</publicRepository>
@@ -28,10 +34,20 @@ public class PublicReadProperty {
 
     private Boolean publicRepository;
 
+    /**
+     * <p>Constructor for PublicReadProperty.</p>
+     *
+     * @param publicRepository a {@link java.lang.Boolean} object.
+     */
     public PublicReadProperty(Boolean publicRepository) {
         this.publicRepository = publicRepository;
     }
 
+    /**
+     * <p>get.</p>
+     *
+     * @return a boolean.
+     */
     public boolean get() {
         if (Objects.nonNull(publicRepository))
             return publicRepository;

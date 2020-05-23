@@ -16,8 +16,20 @@
 
 package com.ehsaniara.s3;
 
+/**
+ * <p>Progress interface.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public interface Progress {
 
+    /**
+     * <p>progress.</p>
+     *
+     * @param buffer an array of {@link byte} objects.
+     * @param length a int.
+     */
     void progress(byte[] buffer, int length);
 
 }

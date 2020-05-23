@@ -19,14 +19,26 @@ package com.ehsaniara.s3;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.regions.AwsRegionProvider;
 
+/**
+ * <p>MavenSettingsRegionProvider class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class MavenSettingsRegionProvider extends AwsRegionProvider {
 
     public final String settingsRegion;
 
+    /**
+     * <p>Constructor for MavenSettingsRegionProvider.</p>
+     *
+     * @param settingsRegion a {@link java.lang.String} object.
+     */
     public MavenSettingsRegionProvider(String settingsRegion) {
         this.settingsRegion = settingsRegion;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getRegion() throws SdkClientException {
         return settingsRegion;

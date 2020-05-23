@@ -28,17 +28,22 @@ import java.util.Objects;
 
 /**
  * S3Connect s3Connect
+ *
+ * @author jay
+ * @version $Id: $Id
  */
 @Log
 public class S3Connect {
 
     /**
+     * <p>connect.</p>
+     *
      * @param authenticationInfo authenticationInfo
      * @param region             region
      * @param endpoint           endpoint
      * @param pathStyle          pathStyle
      * @return AmazonS3
-     * @throws AuthenticationException AuthenticationException
+     * @throws org.apache.maven.wagon.authentication.AuthenticationException org.apache.maven.wagon.authentication.AuthenticationException
      */
     public static AmazonS3 connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
 

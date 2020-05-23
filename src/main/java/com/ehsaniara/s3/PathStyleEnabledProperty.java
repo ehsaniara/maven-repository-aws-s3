@@ -16,16 +16,32 @@
 
 package com.ehsaniara.s3;
 
+/**
+ * <p>PathStyleEnabledProperty class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class PathStyleEnabledProperty {
 
     private static final String PATH_STYLE_PROP = "S3_PATH_STYLE_ENABLED";
     private String pathStyleEnabled;
 
+    /**
+     * <p>Constructor for PathStyleEnabledProperty.</p>
+     *
+     * @param pathStyleEnabled a {@link java.lang.String} object.
+     */
     public PathStyleEnabledProperty(String pathStyleEnabled) {
 
         this.pathStyleEnabled = pathStyleEnabled;
     }
 
+    /**
+     * <p>get.</p>
+     *
+     * @return a boolean.
+     */
     public boolean get() {
         if (pathStyleEnabled != null) {
             return Boolean.parseBoolean(pathStyleEnabled);

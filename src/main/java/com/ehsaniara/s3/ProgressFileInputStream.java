@@ -20,11 +20,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * <p>ProgressFileInputStream class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public final class ProgressFileInputStream extends FileInputStream {
 
     private final Progress progress;
     private long byteLeft;
 
+    /**
+     * <p>Constructor for ProgressFileInputStream.</p>
+     *
+     * @param file a {@link java.io.File} object.
+     * @param progress a {@link com.ehsaniara.s3.Progress} object.
+     * @throws java.io.IOException if any.
+     */
     public ProgressFileInputStream(File file, Progress progress) throws IOException {
         super(file);
         this.progress = progress;
@@ -35,12 +48,14 @@ public final class ProgressFileInputStream extends FileInputStream {
         byteLeft = this.getChannel().size();
     }
 
+    /** {@inheritDoc} */
     @Override
     public synchronized void reset() throws IOException {
         super.reset();
         resetByteLeft();
     }
 
+    /** {@inheritDoc} */
     @Override
     public int read() throws IOException {
         int b = super.read();
@@ -52,6 +67,7 @@ public final class ProgressFileInputStream extends FileInputStream {
         return b;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int read(byte[] b) throws IOException {
         int count = super.read(b);
@@ -64,6 +80,7 @@ public final class ProgressFileInputStream extends FileInputStream {
         return count;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         int count = super.read(b, off, len);

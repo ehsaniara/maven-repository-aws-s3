@@ -20,20 +20,29 @@ import org.apache.maven.wagon.events.SessionListener;
 
 /**
  * Interface for classes which wants to receive and respond to any session update events.
+ *
+ * @author jay
+ * @version $Id: $Id
  */
 public interface SessionListenerContainer {
 
     /**
+     * <p>addSessionListener.</p>
+     *
      * @param sessionListener sessionListener
      */
     void addSessionListener(SessionListener sessionListener);
 
     /**
+     * <p>removeSessionListener.</p>
+     *
      * @param sessionListener sessionListener
      */
     void removeSessionListener(SessionListener sessionListener);
 
     /**
+     * <p>hasSessionListener.</p>
+     *
      * @param sessionListener sessionListener
      * @return boolean
      */

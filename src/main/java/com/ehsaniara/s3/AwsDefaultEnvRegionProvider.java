@@ -19,11 +19,21 @@ package com.ehsaniara.s3;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.regions.AwsRegionProvider;
 
+/**
+ * <p>AwsDefaultEnvRegionProvider class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class AwsDefaultEnvRegionProvider extends AwsRegionProvider {
 
+    /**
+     * <p>Constructor for AwsDefaultEnvRegionProvider.</p>
+     */
     public AwsDefaultEnvRegionProvider() {
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getRegion() throws SdkClientException {
         return System.getenv("AWS_DEFAULT_REGION");

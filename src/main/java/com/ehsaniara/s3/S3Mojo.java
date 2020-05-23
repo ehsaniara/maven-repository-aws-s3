@@ -36,6 +36,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * <p>S3Mojo class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 @Mojo(name = "s3-download")
 public class S3Mojo extends AbstractMojo {
 
@@ -55,9 +61,20 @@ public class S3Mojo extends AbstractMojo {
 
     private static final Logger LOGGER = Logger.getLogger(S3Mojo.class.getName());
 
+    /**
+     * <p>Constructor for S3Mojo.</p>
+     */
     public S3Mojo() {
     }
 
+    /**
+     * <p>Constructor for S3Mojo.</p>
+     *
+     * @param bucket a {@link java.lang.String} object.
+     * @param keys a {@link java.util.List} object.
+     * @param downloadPath a {@link java.lang.String} object.
+     * @param region a {@link java.lang.String} object.
+     */
     public S3Mojo(String bucket, List<String> keys, String downloadPath, String region) {
         this.bucket = bucket;
         this.keys = keys;
@@ -65,6 +82,7 @@ public class S3Mojo extends AbstractMojo {
         this.region = region;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void execute() throws MojoExecutionException {
         AmazonS3 amazonS3;

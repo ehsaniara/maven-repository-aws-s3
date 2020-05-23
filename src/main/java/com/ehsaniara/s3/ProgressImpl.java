@@ -18,18 +18,32 @@ package com.ehsaniara.s3;
 
 import org.apache.maven.wagon.resource.Resource;
 
+/**
+ * <p>ProgressImpl class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class ProgressImpl implements Progress {
 
     private final Resource resource;
     private final int requestType;
     private final ListenerContainer listenerContainer;
 
+    /**
+     * <p>Constructor for ProgressImpl.</p>
+     *
+     * @param resource a {@link org.apache.maven.wagon.resource.Resource} object.
+     * @param requestType a int.
+     * @param listenerContainer a {@link com.ehsaniara.s3.ListenerContainer} object.
+     */
     public ProgressImpl(Resource resource, int requestType, ListenerContainer listenerContainer) {
         this.resource = resource;
         this.requestType = requestType;
         this.listenerContainer = listenerContainer;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void progress(byte[] buffer, int length) {
         listenerContainer.fireTransferProgress(this.resource, this.requestType, buffer, length);

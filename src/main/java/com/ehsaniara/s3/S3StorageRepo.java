@@ -34,6 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * <p>S3StorageRepo class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 @Log
 public class S3StorageRepo {
 
@@ -47,16 +53,41 @@ public class S3StorageRepo {
     private AmazonS3 amazonS3;
     private PublicReadProperty publicReadProperty;
 
+    /**
+     * <p>Constructor for S3StorageRepo.</p>
+     *
+     * @param bucket a {@link java.lang.String} object.
+     * @param baseDirectory a {@link java.lang.String} object.
+     * @param publicReadProperty a {@link com.ehsaniara.s3.PublicReadProperty} object.
+     */
     public S3StorageRepo(String bucket, String baseDirectory, PublicReadProperty publicReadProperty) {
         this.bucket = bucket;
         this.baseDirectory = baseDirectory;
         this.publicReadProperty = publicReadProperty;
     }
 
+    /**
+     * <p>connect.</p>
+     *
+     * @param authenticationInfo a {@link org.apache.maven.wagon.authentication.AuthenticationInfo} object.
+     * @param region a {@link java.lang.String} object.
+     * @param endpoint a {@link com.ehsaniara.s3.EndpointProperty} object.
+     * @param pathStyle a {@link com.ehsaniara.s3.PathStyleEnabledProperty} object.
+     * @throws org.apache.maven.wagon.authentication.AuthenticationException if any.
+     */
     public void connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
         this.amazonS3 = S3Connect.connect(authenticationInfo, region, endpoint, pathStyle);
     }
 
+    /**
+     * <p>copy.</p>
+     *
+     * @param resourceName a {@link java.lang.String} object.
+     * @param destination a {@link java.io.File} object.
+     * @param progress a {@link com.ehsaniara.s3.Progress} object.
+     * @throws org.apache.maven.wagon.TransferFailedException if any.
+     * @throws org.apache.maven.wagon.ResourceDoesNotExistException if any.
+     */
     public void copy(String resourceName, File destination, Progress progress) throws TransferFailedException, ResourceDoesNotExistException {
 
         final String key = resolveKey(resourceName);
@@ -82,6 +113,14 @@ public class S3StorageRepo {
         }
     }
 
+    /**
+     * <p>put.</p>
+     *
+     * @param file a {@link java.io.File} object.
+     * @param destination a {@link java.lang.String} object.
+     * @param progress a {@link com.ehsaniara.s3.Progress} object.
+     * @throws org.apache.maven.wagon.TransferFailedException if any.
+     */
     public void put(File file, String destination, Progress progress) throws TransferFailedException {
 
         final String key = resolveKey(destination);
@@ -104,6 +143,14 @@ public class S3StorageRepo {
         return metadata;
     }
 
+    /**
+     * <p>newResourceAvailable.</p>
+     *
+     * @param resourceName a {@link java.lang.String} object.
+     * @param timeStamp a long.
+     * @return a boolean.
+     * @throws org.apache.maven.wagon.ResourceDoesNotExistException if any.
+     */
     public boolean newResourceAvailable(String resourceName, long timeStamp) throws ResourceDoesNotExistException {
 
         final String key = resolveKey(resourceName);
@@ -122,6 +169,12 @@ public class S3StorageRepo {
     }
 
 
+    /**
+     * <p>list.</p>
+     *
+     * @param path a {@link java.lang.String} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<String> list(String path) {
 
         String key = resolveKey(path);
@@ -151,6 +204,12 @@ public class S3StorageRepo {
         }
     }
 
+    /**
+     * <p>exists.</p>
+     *
+     * @param resourceName a {@link java.lang.String} object.
+     * @return a boolean.
+     */
     public boolean exists(String resourceName) {
 
         final String key = resolveKey(resourceName);
@@ -163,6 +222,9 @@ public class S3StorageRepo {
         }
     }
 
+    /**
+     * <p>disconnect.</p>
+     */
     public void disconnect() {
         amazonS3 = null;
     }

@@ -20,9 +20,17 @@ import com.amazonaws.regions.*;
 
 /**
  * this class extends AwsRegionProviderChain
+ *
+ * @author jay
+ * @version $Id: $Id
  */
 public class S3RegionProviderOrder extends AwsRegionProviderChain {
 
+    /**
+     * <p>Constructor for S3RegionProviderOrder.</p>
+     *
+     * @param providedRegion a {@link java.lang.String} object.
+     */
     public S3RegionProviderOrder(final String providedRegion) {
         super(new MavenSettingsRegionProvider(providedRegion),
                 new AwsDefaultEnvRegionProvider(),

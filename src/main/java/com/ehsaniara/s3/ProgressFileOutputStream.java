@@ -21,27 +21,43 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * <p>ProgressFileOutputStream class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public final class ProgressFileOutputStream extends FileOutputStream {
 
     private final Progress progress;
 
+    /**
+     * <p>Constructor for ProgressFileOutputStream.</p>
+     *
+     * @param file a {@link java.io.File} object.
+     * @param progress a {@link com.ehsaniara.s3.Progress} object.
+     * @throws java.io.FileNotFoundException if any.
+     */
     public ProgressFileOutputStream(File file, Progress progress) throws FileNotFoundException {
         super(file);
         this.progress = progress;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void write(int b) throws IOException {
         super.write(b);
         this.progress.progress(new byte[]{(byte) b}, 1);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void write(byte[] bytes) throws IOException {
         super.write(bytes);
         this.progress.progress(bytes, bytes.length);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void write(byte[] byteArray, int off, int len) throws IOException {
         super.write(byteArray, off, len);

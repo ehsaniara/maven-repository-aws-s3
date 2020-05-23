@@ -25,9 +25,21 @@ import org.apache.maven.wagon.authentication.AuthenticationInfo;
 
 import java.util.Objects;
 
+/**
+ * <p>AwsCredentialsFactory class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 @Log
 public class AwsCredentialsFactory {
 
+    /**
+     * <p>connect.</p>
+     *
+     * @param authenticationInfo a {@link org.apache.maven.wagon.authentication.AuthenticationInfo} object.
+     * @return a {@link com.amazonaws.auth.AWSCredentialsProvider} object.
+     */
     public AWSCredentialsProvider connect(AuthenticationInfo authenticationInfo) {
         if (Objects.isNull(authenticationInfo)) {
             return new DefaultAWSCredentialsProviderChain();

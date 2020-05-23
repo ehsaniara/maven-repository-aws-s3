@@ -16,8 +16,20 @@
 
 package com.ehsaniara.s3;
 
+/**
+ * <p>KeyResolver class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class KeyResolver {
 
+    /**
+     * <p>resolve.</p>
+     *
+     * @param paths a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public String resolve(String... paths) {
 
         StringBuilder builder = new StringBuilder();

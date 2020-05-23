@@ -23,23 +23,30 @@ import org.apache.maven.wagon.events.SessionListener;
 import java.util.Vector;
 
 /**
+ * <p>SessionListenerContainerImpl class.</p>
+ *
  * @see Wagon
  * @see SessionListener
  * @see SessionListenerContainer
+ * @author jay
+ * @version $Id: $Id
  */
 public class SessionListenerContainerImpl implements SessionListenerContainer {
 
     private final Wagon wagon;
     private final Vector<SessionListener> sessionListeners;
 
+    /**
+     * <p>Constructor for SessionListenerContainerImpl.</p>
+     *
+     * @param wagon a {@link org.apache.maven.wagon.Wagon} object.
+     */
     public SessionListenerContainerImpl(Wagon wagon) {
         this.wagon = wagon;
         sessionListeners = new Vector<>();
     }
 
-    /**
-     * @param sessionListener sessionListener
-     */
+    /** {@inheritDoc} */
     @Override
     public void addSessionListener(SessionListener sessionListener) {
         if (sessionListener == null) {
@@ -50,24 +57,21 @@ public class SessionListenerContainerImpl implements SessionListenerContainer {
         }
     }
 
-    /**
-     * @param sessionListener sessionListener
-     */
+    /** {@inheritDoc} */
     @Override
     public void removeSessionListener(SessionListener sessionListener) {
         sessionListeners.remove(sessionListener);
     }
 
-    /**
-     * @param sessionListener sessionListener
-     * @return boolean
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean hasSessionListener(SessionListener sessionListener) {
         return sessionListeners.contains(sessionListener);
     }
 
     /**
+     * {@inheritDoc}
+     *
      * void fireSessionOpening
      */
     @Override
@@ -77,6 +81,8 @@ public class SessionListenerContainerImpl implements SessionListenerContainer {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * void fireSessionOpened
      */
     @Override
@@ -86,6 +92,8 @@ public class SessionListenerContainerImpl implements SessionListenerContainer {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * void fireSessionDisconnecting
      */
     @Override
@@ -95,6 +103,8 @@ public class SessionListenerContainerImpl implements SessionListenerContainer {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * void fireSessionDisconnected
      */
     @Override
@@ -104,6 +114,8 @@ public class SessionListenerContainerImpl implements SessionListenerContainer {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * void fireSessionLoggedIn
      */
     @Override
@@ -113,6 +125,8 @@ public class SessionListenerContainerImpl implements SessionListenerContainer {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * void fireSessionLoggedOff
      */
     @Override

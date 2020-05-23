@@ -27,6 +27,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * <p>PrefixKeysIterator class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public class PrefixKeysIterator implements Iterator<String> {
 
     private AmazonS3 amazonS3;
@@ -36,22 +42,32 @@ public class PrefixKeysIterator implements Iterator<String> {
     private ObjectListing tempListing = null;
     private List<S3ObjectSummary> currentKeys = new ArrayList<>();
 
+    /**
+     * <p>Constructor for PrefixKeysIterator.</p>
+     *
+     * @param amazonS3 a {@link com.amazonaws.services.s3.AmazonS3} object.
+     * @param bucket a {@link java.lang.String} object.
+     * @param prefix a {@link java.lang.String} object.
+     */
     public PrefixKeysIterator(AmazonS3 amazonS3, String bucket, String prefix) {
         this.amazonS3 = amazonS3;
         this.bucket = bucket;
         this.prefix = prefix;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void forEachRemaining(Consumer<? super String> action) {
         throw new UnsupportedOperationException();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
         if (currentKeys.size() > 0) {
@@ -81,6 +97,7 @@ public class PrefixKeysIterator implements Iterator<String> {
                 .withPrefix(prefix));
     }
 
+    /** {@inheritDoc} */
     @Override
     public String next() {
         if (!hasNext()) {

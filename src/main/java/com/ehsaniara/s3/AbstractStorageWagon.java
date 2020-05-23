@@ -26,6 +26,12 @@ import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.repository.Repository;
 
+/**
+ * <p>Abstract AbstractStorageWagon class.</p>
+ *
+ * @author jay
+ * @version $Id: $Id
+ */
 public abstract class AbstractStorageWagon implements Wagon {
 
     private static final boolean SUPPORTS_DIRECTORY_COPY = true;
@@ -40,46 +46,57 @@ public abstract class AbstractStorageWagon implements Wagon {
 
     private boolean interactive;
 
+    /**
+     * <p>Constructor for AbstractStorageWagon.</p>
+     */
     public AbstractStorageWagon() {
         this.sessionListenerContainer = new SessionListenerContainerImpl(this);
         this.listenerContainer = new ListenerContainerImpl(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supportsDirectoryCopy() {
         return SUPPORTS_DIRECTORY_COPY;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Repository getRepository() {
         return repository;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void openConnection() {
         throw new UnsupportedOperationException();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void connect(Repository repository) throws ConnectionException, AuthenticationException {
         connect(repository, null, (ProxyInfoProvider) null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void connect(Repository repository, ProxyInfo proxyInfo) throws ConnectionException, AuthenticationException {
         connect(repository, null, proxyInfo);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void connect(Repository repository, ProxyInfoProvider proxyInfoProvider) throws ConnectionException, AuthenticationException {
         connect(repository, null, proxyInfoProvider);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void connect(Repository repository, AuthenticationInfo authenticationInfo) throws ConnectionException, AuthenticationException {
         connect(repository, authenticationInfo, (ProxyInfoProvider) null);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void connect(Repository repository, AuthenticationInfo authenticationInfo, ProxyInfo proxyInfo) throws ConnectionException, AuthenticationException {
         connect(repository, authenticationInfo, p -> {
@@ -88,61 +105,73 @@ public abstract class AbstractStorageWagon implements Wagon {
         });
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setTimeout(int i) {
         this.connectionTimeOut = i;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getTimeout() {
         return connectionTimeOut;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setReadTimeout(int i) {
         readConnectionTimeOut = i;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getReadTimeout() {
         return readConnectionTimeOut;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void addSessionListener(SessionListener sessionListener) {
         sessionListenerContainer.addSessionListener(sessionListener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeSessionListener(SessionListener sessionListener) {
         sessionListenerContainer.removeSessionListener(sessionListener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasSessionListener(SessionListener sessionListener) {
         return sessionListenerContainer.hasSessionListener(sessionListener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void addTransferListener(TransferListener transferListener) {
         listenerContainer.addTransferListener(transferListener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeTransferListener(TransferListener transferListener) {
         listenerContainer.removeTransferListener(transferListener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasTransferListener(TransferListener transferListener) {
         return listenerContainer.hasTransferListener(transferListener);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isInteractive() {
         return interactive;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setInteractive(boolean b) {
         interactive = b;
