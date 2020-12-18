@@ -6,12 +6,12 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
 
-![AWS S3 and Maven](material/maven-repository-aws-s3-0.png)
+![AWS S3 and Maven](docs/maven-repository-aws-s3-0.png)
 
 **Introduction**
 With the help of this maven-plugin you can create your own private Maven Repository with the essential features. There are many commercial products out there, for example: [Nexus](https://help.sonatype.com/repomanager3/formats/maven-repositories), [JFrog](https://jfrog.com/artifactory/) and ets.., but the drawback is they required more resources (Compute and storage) and some are costly. Where you can simply setup in your AWS cloud with much much less cost.
  
-![High Level Arch.](material/maven-repository-aws-s3-1.png)
+![High Level Arch.](docs/maven-repository-aws-s3-1.png)
 
 **Start Here**
 
