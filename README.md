@@ -42,8 +42,8 @@ You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 <a name="Configure-By-AWS-CLI"></a>
 ## Configure By AWS CLI:
 
-###### Note: make sure that you have latest AWS CLI installed in your PC.
-###### Note: make sure that you are in your project root directory and have permission to create a file.
+> Note: make sure that you have latest AWS CLI installed in your PC.
+> Note: make sure that you are in your project root directory and have permission to create a file.
 
 ```shell script
 curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/master/aws-s3-setup.sh | bash /dev/stdin bucket_name username
