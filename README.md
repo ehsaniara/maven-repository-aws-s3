@@ -92,7 +92,7 @@ on Add user, select a User name and make sure you have select the "Programmatic 
 then select "Attach existing policies directly", and in ```Filter policies``` box search for your the policy name you have just created.
 then tag,review and create the user.
 
-#### Important: Make sure that you have download the .csv file and store it in the secure place. the credentials in this file is required to user in your ```~/.m2/setting.xml``` file
+>> Important: Make sure that you have download the .csv file and store it in the secure place. the credentials in this file is required to user in your ```~/.m2/setting.xml``` file
 
 create a user with (Programmatic access). 
 
