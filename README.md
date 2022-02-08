@@ -33,7 +33,7 @@ With the help of this maven-plugin you can create your own private Maven Reposit
 
 <a name="Configure-AWS-Pre-Req"></a>
 ## Configure AWS Pre-Req
-First thing first, I assume you already have AWS account and with (Preferably Admin permission) permission to create IAM User, -Rule and -Policy.
+Create IAM User, -Rule and -Policy.
 
 You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 
