@@ -57,7 +57,7 @@ curl -s https://raw.githubusercontent.com/ehsaniara/maven-repository-aws-s3/mast
 <a name="Create-S3-Bucket"></a>
 ### Create S3 Bucket
 
-create a AWS S3 bucket, try to have unique name from you domain, for example: ```my-project-com-maven-repository```
+Create a AWS S3 bucket, try to have unique name from you domain, for example: ```my-project-com-maven-repository```
 ###### Note: Block all public access on the bucket
 and also create 2 folder of ```release``` and ```snapshot``` in it.
 
