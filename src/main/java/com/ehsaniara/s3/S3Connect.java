@@ -16,15 +16,16 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.SdkClientException;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.extern.java.Log;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import software.amazon.awssdk.core.exception.SdkClientException;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
+import software.amazon.awssdk.services.s3.S3Configuration;
 
-import java.util.Objects;
+import java.net.URI;
 
 /**
  * S3Connect s3Connect
@@ -42,36 +43,27 @@ public class S3Connect {
      * @param region             region
      * @param endpoint           endpoint
      * @param pathStyle          pathStyle
-     * @return AmazonS3
+     * @return S3Client
      * @throws org.apache.maven.wagon.authentication.AuthenticationException org.apache.maven.wagon.authentication.AuthenticationException
      */
-    public static AmazonS3 connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
+    public static S3Client connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
 
-        AmazonS3ClientBuilder builder = null;
         try {
-            builder = createAmazonS3ClientBuilder(authenticationInfo, region, endpoint, pathStyle);
+            S3Client s3Client = createS3Client(authenticationInfo, region, endpoint, pathStyle);
 
-            AmazonS3 amazonS3 = builder.build();
+            log.finer(String.format("Connected to S3 using endpoint %s.", endpoint.isPresent() ? endpoint.get() : "default"));
 
-            log.finer(String.format("Connected to S3 using bucket %s.", endpoint.get()));
-
-            return amazonS3;
+            return s3Client;
         } catch (SdkClientException e) {
-            if (Objects.nonNull(builder)) {
-                StringBuilder errorMessage = new StringBuilder();
-                errorMessage.append("Failed to connect");
-                if (Objects.nonNull(builder.getEndpoint())) {
-                    errorMessage.append(
-                            String.format(" to endpoint [%s] using region [%s]",
-                                    builder.getEndpoint().getServiceEndpoint(),
-                                    builder.getEndpoint().getSigningRegion()));
-
-                } else {
-                    errorMessage.append(String.format(" using region [%s]", builder.getRegion()));
-                }
-                throw new AuthenticationException(errorMessage.toString(), e);
+            StringBuilder errorMessage = new StringBuilder();
+            errorMessage.append("Failed to connect");
+            if (endpoint.isPresent()) {
+                errorMessage.append(String.format(" to endpoint [%s]", endpoint.get()));
             }
-            throw new AuthenticationException("Could not authenticate", e);
+            if (region != null) {
+                errorMessage.append(String.format(" using region [%s]", region));
+            }
+            throw new AuthenticationException(errorMessage.toString(), e);
         }
     }
 
@@ -80,21 +72,31 @@ public class S3Connect {
      * @param region             region
      * @param endpoint           endpoint
      * @param pathStyle          pathStyle
-     * @return AmazonS3ClientBuilder
+     * @return S3Client
      */
-    private static AmazonS3ClientBuilder createAmazonS3ClientBuilder(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) {
+    private static S3Client createS3Client(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) {
         final S3RegionProviderOrder regionProvider = new S3RegionProviderOrder(region);
 
-        AmazonS3ClientBuilder builder;
-        builder = AmazonS3ClientBuilder.standard().withCredentials(new AwsCredentialsFactory().connect(authenticationInfo));
+        S3Configuration s3Config = S3Configuration.builder()
+                .pathStyleAccessEnabled(pathStyle.get())
+                .build();
 
-        if (endpoint.isPresent()) {
-            builder.setEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint.get(), builder.getRegion()));
+        S3ClientBuilder builder = S3Client.builder()
+                .credentialsProvider(new AwsCredentialsFactory().connect(authenticationInfo))
+                .serviceConfiguration(s3Config);
+
+        String regionId = regionProvider.getRegionString();
+        if (regionId != null) {
+            builder.region(Region.of(regionId));
         } else {
-            builder.setRegion(regionProvider.getRegion());
+            // Default fallback region
+            builder.region(Region.US_EAST_1);
         }
 
-        builder.setPathStyleAccessEnabled(pathStyle.get());
-        return builder;
+        if (endpoint.isPresent()) {
+            builder.endpointOverride(URI.create(endpoint.get()));
+        }
+
+        return builder.build();
     }
 }

@@ -9,7 +9,10 @@
 ![AWS S3 and Maven](docs/maven-repository-aws-s3-0.png)
 
 **Introduction**
+
 With the help of this maven-plugin you can create your own private Maven Repository with the essential features. There are many commercial products out there, for example: [Nexus](https://help.sonatype.com/repomanager3/formats/maven-repositories), [JFrog](https://jfrog.com/artifactory/) and ets.., but the drawback is they required more resources (Compute and storage) and some are costly. Where you can simply setup in your AWS cloud with much much less cost.
+
+> **New in v1.2.12**: Upgraded to AWS SDK v2 with support for AWS SSO authentication!
  
 ![High Level Arch.](docs/maven-repository-aws-s3-1.png)
 
@@ -37,7 +40,31 @@ Create IAM User, -Rule and -Policy.
 
 You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 
-##### NOTE: Java 1.8 and 11 supporteds
+##### NOTE: Java 1.8, 11, and 17+ supported
+
+## AWS SDK v2
+
+This plugin uses **AWS SDK v2** which provides improved performance and supports modern authentication methods including **AWS SSO**.
+
+### Authentication Methods
+
+The plugin supports multiple authentication methods (in order of priority):
+
+1. **Maven settings.xml** - Explicit credentials (see [Local PC Setup](#Local-PC-Setup))
+2. **Environment variables** - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+3. **AWS SSO** - Use `aws sso login --profile your-profile`
+4. **Credentials file** - `~/.aws/credentials`
+5. **IAM roles** - EC2 instance profiles, ECS task roles, EKS web identity
+
+#### Using AWS SSO
+
+If you use AWS SSO, simply login and the plugin will automatically use your session:
+
+```bash
+aws sso login --profile your-sso-profile
+export AWS_PROFILE=your-sso-profile
+mvn deploy
+```
 
 <a name="Configure-By-AWS-CLI"></a>
 ## Configure By AWS CLI:
@@ -183,7 +210,7 @@ And the most important one, add the following xml in your project ```pom.xml``` 
         <extension>
             <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.12</version>
         </extension>
     </extensions>
 ...
@@ -223,7 +250,7 @@ for Example:
         <extension>
             <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.12</version>
         </extension>
     </extensions>
     

@@ -16,12 +16,12 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import lombok.extern.java.Log;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
 import java.util.Objects;
 
@@ -38,14 +38,17 @@ public class AwsCredentialsFactory {
      * <p>connect.</p>
      *
      * @param authenticationInfo a {@link org.apache.maven.wagon.authentication.AuthenticationInfo} object.
-     * @return a {@link com.amazonaws.auth.AWSCredentialsProvider} object.
+     * @return a {@link software.amazon.awssdk.auth.credentials.AwsCredentialsProvider} object.
      */
-    public AWSCredentialsProvider connect(AuthenticationInfo authenticationInfo) {
+    public AwsCredentialsProvider connect(AuthenticationInfo authenticationInfo) {
         if (Objects.isNull(authenticationInfo)) {
-            return new DefaultAWSCredentialsProviderChain();
+            return DefaultCredentialsProvider.create();
         } else {
-            log.info("AWS Connection By AWSStaticCredentialsProvider class");
-            return new AWSStaticCredentialsProvider(new BasicAWSCredentials(authenticationInfo.getUserName(), authenticationInfo.getPassword()));
+            log.info("AWS Connection By StaticCredentialsProvider class");
+            return StaticCredentialsProvider.create(
+                    AwsBasicCredentials.create(
+                            authenticationInfo.getUserName(),
+                            authenticationInfo.getPassword()));
         }
     }
 }

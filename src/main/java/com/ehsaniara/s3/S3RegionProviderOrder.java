@@ -16,15 +16,23 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.regions.*;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
+import software.amazon.awssdk.regions.providers.AwsRegionProvider;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * this class extends AwsRegionProviderChain
+ * Custom region provider chain that prioritizes Maven settings,
+ * then falls back to AWS SDK's default resolution order.
  *
  * @author jay
  * @version $Id: $Id
  */
-public class S3RegionProviderOrder extends AwsRegionProviderChain {
+public class S3RegionProviderOrder implements AwsRegionProvider {
+
+    private final List<AwsRegionProvider> providers;
 
     /**
      * <p>Constructor for S3RegionProviderOrder.</p>
@@ -32,12 +40,36 @@ public class S3RegionProviderOrder extends AwsRegionProviderChain {
      * @param providedRegion a {@link java.lang.String} object.
      */
     public S3RegionProviderOrder(final String providedRegion) {
-        super(new MavenSettingsRegionProvider(providedRegion),
+        this.providers = Arrays.asList(
+                new MavenSettingsRegionProvider(providedRegion),
                 new AwsDefaultEnvRegionProvider(),
-                new AwsEnvVarOverrideRegionProvider(),
-                new AwsSystemPropertyRegionProvider(),
-                new AwsProfileRegionProvider(),
-                new InstanceMetadataRegionProvider());
+                DefaultAwsRegionProviderChain.builder().build()
+        );
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Region getRegion() {
+        for (AwsRegionProvider provider : providers) {
+            try {
+                Region region = provider.getRegion();
+                if (region != null) {
+                    return region;
+                }
+            } catch (Exception e) {
+                // Continue to next provider
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get region as String for backward compatibility.
+     *
+     * @return the region string or null
+     */
+    public String getRegionString() {
+        Region region = getRegion();
+        return region != null ? region.id() : null;
+    }
 }
