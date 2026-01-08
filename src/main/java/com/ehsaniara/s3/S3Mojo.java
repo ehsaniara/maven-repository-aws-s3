@@ -16,16 +16,16 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.S3ClientOptions;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.wagon.authentication.AuthenticationException;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -85,54 +85,62 @@ public class S3Mojo extends AbstractMojo {
     /** {@inheritDoc} */
     @Override
     public void execute() throws MojoExecutionException {
-        AmazonS3 amazonS3;
+        S3Client s3Client;
 
         try {
-            amazonS3 = S3Connect.connect(null, region, EndpointProperty.empty(), new PathStyleEnabledProperty(String.valueOf(S3ClientOptions.DEFAULT_PATH_STYLE_ACCESS)));
+            // Path style access is disabled by default in SDK v2
+            s3Client = S3Connect.connect(null, region, EndpointProperty.empty(), new PathStyleEnabledProperty("false"));
         } catch (AuthenticationException e) {
             throw new MojoExecutionException(
-                    String.format("Unable to authenticate to S3 with the available credentials. Make sure to either define the environment variables or System properties defined in https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/DefaultAWSCredentialsProviderChain.html.%n" +
+                    String.format("Unable to authenticate to S3 with the available credentials. Make sure to either define the environment variables or System properties defined in https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html.%n" +
                             "Detail: %s", e.getMessage()),
                     e);
         }
 
-        if (keys.size() == 1) {
-            downloadSingleFile(amazonS3, keys.get(0));
-            return;
-        }
+        try {
+            if (keys.size() == 1) {
+                downloadSingleFile(s3Client, keys.get(0));
+                return;
+            }
 
-        List<Iterator<String>> prefixKeysIterators = keys.stream()
-                .map(pi -> new PrefixKeysIterator(amazonS3, bucket, pi))
-                .collect(Collectors.toList());
-        Iterator<String> keyIteratorConcatenated = new KeyIteratorConcatenated(prefixKeysIterators);
+            List<Iterator<String>> prefixKeysIterators = keys.stream()
+                    .map(pi -> new PrefixKeysIterator(s3Client, bucket, pi))
+                    .collect(Collectors.toList());
+            Iterator<String> keyIteratorConcatenated = new KeyIteratorConcatenated(prefixKeysIterators);
 
-        while (keyIteratorConcatenated.hasNext()) {
+            while (keyIteratorConcatenated.hasNext()) {
 
-            String key = keyIteratorConcatenated.next();
-            downloadFile(amazonS3, key);
+                String key = keyIteratorConcatenated.next();
+                downloadFile(s3Client, key);
+            }
+        } finally {
+            s3Client.close();
         }
     }
 
-    private void downloadSingleFile(AmazonS3 amazonS3, String key) {
+    private void downloadSingleFile(S3Client s3Client, String key) {
         File file = new File(downloadPath);
 
         if (file.getParentFile() != null) {
             file.getParentFile().mkdirs();
         }
 
-        S3Object s3Object = amazonS3.getObject(bucket, key);
+        GetObjectRequest request = GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
 
-        try (S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+        try (ResponseInputStream<GetObjectResponse> s3Object = s3Client.getObject(request);
              FileOutputStream fileOutputStream = new FileOutputStream(file)
         ) {
-            IOUtils.copy(s3ObjectInputStream, fileOutputStream);
+            IOUtils.copy(s3Object, fileOutputStream);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not download s3 file");
             e.printStackTrace();
         }
     }
 
-    private void downloadFile(AmazonS3 amazonS3, String key) {
+    private void downloadFile(S3Client s3Client, String key) {
 
         File file = new File(createFullFilePath(key));
 
@@ -140,30 +148,33 @@ public class S3Mojo extends AbstractMojo {
             file.getParentFile().mkdirs();
         }
 
-        S3Object s3Object = amazonS3.getObject(bucket, key);
+        GetObjectRequest request = GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
 
-        if (isDirectory(s3Object)) {
-            return;
-        }
+        try (ResponseInputStream<GetObjectResponse> s3Object = s3Client.getObject(request)) {
+            if (isDirectory(s3Object.response())) {
+                return;
+            }
 
-        try (S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
-             FileOutputStream fileOutputStream = new FileOutputStream(file)
-        ) {
-            IOUtils.copy(s3ObjectInputStream, fileOutputStream);
+            try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                IOUtils.copy(s3Object, fileOutputStream);
+            }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Could not download s3 file");
             e.printStackTrace();
         }
     }
 
-    private final String createFullFilePath(String key) {
+    private String createFullFilePath(String key) {
 
         String fullPath = downloadPath + "/" + key;
         return fullPath;
     }
 
-    private final boolean isDirectory(S3Object s3Object) {
-        return s3Object.getObjectMetadata().getContentType().equals(DIRECTORY_CONTENT_TYPE);
+    private boolean isDirectory(GetObjectResponse response) {
+        return DIRECTORY_CONTENT_TYPE.equals(response.contentType());
     }
 
 

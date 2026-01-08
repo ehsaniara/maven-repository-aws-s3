@@ -16,15 +16,14 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -35,24 +34,36 @@ import java.util.function.Consumer;
  */
 public class PrefixKeysIterator implements Iterator<String> {
 
-    private AmazonS3 amazonS3;
-    private String prefix;
-    private String bucket;
+    private final S3Client s3Client;
+    private final String prefix;
+    private final String bucket;
 
-    private ObjectListing tempListing = null;
-    private List<S3ObjectSummary> currentKeys = new ArrayList<>();
+    private Iterator<S3Object> s3ObjectIterator;
+    private List<String> currentKeys = new ArrayList<>();
 
     /**
      * <p>Constructor for PrefixKeysIterator.</p>
      *
-     * @param amazonS3 a {@link com.amazonaws.services.s3.AmazonS3} object.
+     * @param s3Client a {@link software.amazon.awssdk.services.s3.S3Client} object.
      * @param bucket a {@link java.lang.String} object.
      * @param prefix a {@link java.lang.String} object.
      */
-    public PrefixKeysIterator(AmazonS3 amazonS3, String bucket, String prefix) {
-        this.amazonS3 = amazonS3;
+    public PrefixKeysIterator(S3Client s3Client, String bucket, String prefix) {
+        this.s3Client = s3Client;
         this.bucket = bucket;
         this.prefix = prefix;
+        initializeIterator();
+    }
+
+    private void initializeIterator() {
+        ListObjectsV2Request request = ListObjectsV2Request.builder()
+                .bucket(bucket)
+                .prefix(prefix)
+                .build();
+
+        // SDK v2 paginators handle all pagination automatically
+        ListObjectsV2Iterable responses = s3Client.listObjectsV2Paginator(request);
+        this.s3ObjectIterator = responses.contents().iterator();
     }
 
     /** {@inheritDoc} */
@@ -70,31 +81,15 @@ public class PrefixKeysIterator implements Iterator<String> {
     /** {@inheritDoc} */
     @Override
     public boolean hasNext() {
-        if (currentKeys.size() > 0) {
+        if (!currentKeys.isEmpty()) {
             return true;
         }
-
-        fetchKeysIfExist();
-        return currentKeys.size() > 0;
-    }
-
-    private void fetchKeysIfExist() {
-        if (Objects.isNull(tempListing)) {
-            tempListing = getObjectListing();
-            currentKeys.addAll(tempListing.getObjectSummaries());
-        } else {
-            if (tempListing.isTruncated()) {
-                tempListing = amazonS3.listNextBatchOfObjects(tempListing);
-                currentKeys.addAll(tempListing.getObjectSummaries());
-            }
+        // Prefetch next key if available
+        if (s3ObjectIterator.hasNext()) {
+            currentKeys.add(s3ObjectIterator.next().key());
+            return true;
         }
-    }
-
-    private ObjectListing getObjectListing() {
-
-        return amazonS3.listObjects(new ListObjectsRequest()
-                .withBucketName(bucket)
-                .withPrefix(prefix));
+        return false;
     }
 
     /** {@inheritDoc} */
@@ -104,7 +99,7 @@ public class PrefixKeysIterator implements Iterator<String> {
             return null;
         }
 
-        return currentKeys.remove(0).getKey();
+        return currentKeys.remove(0);
     }
 
 }

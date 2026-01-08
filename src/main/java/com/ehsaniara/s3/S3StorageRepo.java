@@ -16,8 +16,6 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.apache.commons.io.IOUtils;
@@ -25,6 +23,18 @@ import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +60,7 @@ public class S3StorageRepo {
 
     private final KeyResolver keyResolver = new KeyResolver();
 
-    private AmazonS3 amazonS3;
+    private S3Client s3Client;
     private PublicReadProperty publicReadProperty;
 
     /**
@@ -76,7 +86,7 @@ public class S3StorageRepo {
      * @throws org.apache.maven.wagon.authentication.AuthenticationException if any.
      */
     public void connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
-        this.amazonS3 = S3Connect.connect(authenticationInfo, region, endpoint, pathStyle);
+        this.s3Client = S3Connect.connect(authenticationInfo, region, endpoint, pathStyle);
     }
 
     /**
@@ -93,21 +103,25 @@ public class S3StorageRepo {
         final String key = resolveKey(resourceName);
 
         try {
+            GetObjectRequest getRequest = GetObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
 
-            final S3Object s3Object;
+            final ResponseInputStream<GetObjectResponse> s3Object;
             try {
-                s3Object = amazonS3.getObject(bucket, key);
-            } catch (AmazonS3Exception e) {
+                s3Object = s3Client.getObject(getRequest);
+            } catch (NoSuchKeyException e) {
                 throw new ResourceDoesNotExistException("Resource not exist");
             }
             //make sure the folder exists or the outputStream will fail.
             destination.getParentFile().mkdirs();
             //
             try (OutputStream outputStream = new ProgressFileOutputStream(destination, progress);
-                 InputStream inputStream = s3Object.getObjectContent()) {
+                 InputStream inputStream = s3Object) {
                 IOUtils.copy(inputStream, outputStream);
             }
-        } catch (AmazonS3Exception | IOException e) {
+        } catch (S3Exception | IOException e) {
             log.log(Level.SEVERE, "Could not transfer file", e);
             throw new TransferFailedException("Could not download resource " + key);
         }
@@ -127,20 +141,20 @@ public class S3StorageRepo {
 
         try {
             try (InputStream inputStream = new ProgressFileInputStream(file, progress)) {
-                PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, key, inputStream, createContentLengthMetadata(file));
-                applyPublicRead(putObjectRequest);
-                amazonS3.putObject(putObjectRequest);
+                PutObjectRequest.Builder putRequestBuilder = PutObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .contentLength(file.length());
+
+                applyPublicRead(putRequestBuilder);
+
+                s3Client.putObject(putRequestBuilder.build(),
+                        RequestBody.fromInputStream(inputStream, file.length()));
             }
-        } catch (AmazonS3Exception | IOException e) {
+        } catch (S3Exception | IOException e) {
             log.log(Level.SEVERE, "Could not transfer file ", e);
             throw new TransferFailedException("Could not transfer file " + file.getName());
         }
-    }
-
-    private ObjectMetadata createContentLengthMetadata(File file) {
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.length());
-        return metadata;
     }
 
     /**
@@ -158,11 +172,15 @@ public class S3StorageRepo {
         log.log(Level.FINER, String.format("Checking if new key %s exists", key));
 
         try {
-            ObjectMetadata objectMetadata = amazonS3.getObjectMetadata(bucket, key);
+            HeadObjectRequest headRequest = HeadObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
 
-            long updated = objectMetadata.getLastModified().getTime();
+            HeadObjectResponse response = s3Client.headObject(headRequest);
+            long updated = response.lastModified().toEpochMilli();
             return updated > timeStamp;
-        } catch (AmazonS3Exception e) {
+        } catch (NoSuchKeyException e) {
             log.log(Level.SEVERE, String.format("Could not find %s", key), e);
             throw new ResourceDoesNotExistException("Could not find key " + key);
         }
@@ -179,28 +197,25 @@ public class S3StorageRepo {
 
         String key = resolveKey(path);
 
-        ObjectListing objectListing = amazonS3.listObjects(new ListObjectsRequest()
-                .withBucketName(bucket)
-                .withPrefix(key));
+        ListObjectsV2Request listRequest = ListObjectsV2Request.builder()
+                .bucket(bucket)
+                .prefix(key)
+                .build();
+
         List<String> objects = new ArrayList<>();
-        retrieveAllObjects(objectListing, objects);
+
+        // Use paginator for automatic pagination
+        s3Client.listObjectsV2Paginator(listRequest)
+                .contents()
+                .forEach(s3Object -> objects.add(s3Object.key()));
+
         return objects;
     }
 
-    private void applyPublicRead(PutObjectRequest putObjectRequest) {
+    private void applyPublicRead(PutObjectRequest.Builder putRequestBuilder) {
         if (publicReadProperty.get()) {
             log.info("Public read was set to true");
-            putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
-        }
-    }
-
-    private void retrieveAllObjects(ObjectListing objectListing, List<String> objects) {
-
-        objectListing.getObjectSummaries().forEach(os -> objects.add(os.getKey()));
-
-        if (objectListing.isTruncated()) {
-            ObjectListing nextObjectListing = amazonS3.listNextBatchOfObjects(objectListing);
-            retrieveAllObjects(nextObjectListing, objects);
+            putRequestBuilder.acl(ObjectCannedACL.PUBLIC_READ);
         }
     }
 
@@ -215,9 +230,14 @@ public class S3StorageRepo {
         final String key = resolveKey(resourceName);
 
         try {
-            amazonS3.getObjectMetadata(bucket, key);
+            HeadObjectRequest headRequest = HeadObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
+
+            s3Client.headObject(headRequest);
             return true;
-        } catch (AmazonS3Exception e) {
+        } catch (NoSuchKeyException e) {
             return false;
         }
     }
@@ -226,7 +246,10 @@ public class S3StorageRepo {
      * <p>disconnect.</p>
      */
     public void disconnect() {
-        amazonS3 = null;
+        if (s3Client != null) {
+            s3Client.close();
+        }
+        s3Client = null;
     }
 
     private String resolveKey(String path) {
