@@ -16,8 +16,8 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.SdkClientException;
-import com.amazonaws.regions.AwsRegionProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.regions.providers.AwsRegionProvider;
 
 /**
  * <p>AwsDefaultEnvRegionProvider class.</p>
@@ -25,7 +25,7 @@ import com.amazonaws.regions.AwsRegionProvider;
  * @author jay
  * @version $Id: $Id
  */
-public class AwsDefaultEnvRegionProvider extends AwsRegionProvider {
+public class AwsDefaultEnvRegionProvider implements AwsRegionProvider {
 
     /**
      * <p>Constructor for AwsDefaultEnvRegionProvider.</p>
@@ -35,7 +35,8 @@ public class AwsDefaultEnvRegionProvider extends AwsRegionProvider {
 
     /** {@inheritDoc} */
     @Override
-    public String getRegion() throws SdkClientException {
-        return System.getenv("AWS_DEFAULT_REGION");
+    public Region getRegion() {
+        String regionStr = System.getenv("AWS_DEFAULT_REGION");
+        return regionStr != null ? Region.of(regionStr) : null;
     }
 }

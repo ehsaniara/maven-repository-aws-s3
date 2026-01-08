@@ -16,7 +16,7 @@
 
 package com.ehsaniara.s3;
 
-import com.amazonaws.services.s3.model.AmazonS3Exception;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
@@ -90,7 +90,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
                 throw new ResourceDoesNotExistException(s);
             }
             return list;
-        } catch (AmazonS3Exception e) {
+        } catch (S3Exception e) {
             throw new TransferFailedException("Could not fetch objects with prefix: " + s);
         }
     }
