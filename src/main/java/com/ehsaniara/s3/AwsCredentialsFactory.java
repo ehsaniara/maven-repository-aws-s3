@@ -44,13 +44,13 @@ public class AwsCredentialsFactory {
      */
     public AwsCredentialsProvider connect(AuthenticationInfo authenticationInfo, String profile) {
         if (!Objects.isNull(authenticationInfo)) {
-            log.info("AWS Connection By StaticCredentialsProvider class");
+            log.fine("AWS Connection By StaticCredentialsProvider class");
             return StaticCredentialsProvider.create(
                     AwsBasicCredentials.create(
                             authenticationInfo.getUserName(),
                             authenticationInfo.getPassword()));
         } else if (profile != null && !profile.isEmpty()) {
-            log.info(String.format("AWS Connection By ProfileCredentialsProvider using profile '%s'", profile));
+            log.fine(String.format("AWS Connection By ProfileCredentialsProvider using profile '%s'", profile));
             return ProfileCredentialsProvider.create(profile);
         } else {
             return DefaultCredentialsProvider.builder().build();
