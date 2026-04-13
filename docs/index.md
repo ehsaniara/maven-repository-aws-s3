@@ -22,6 +22,8 @@ With the help of this maven-plugin you can create your own private Maven Reposit
     * [Create Policy](#Create-Policy)
     * [Create IAM USER](#Create-IAM-USER)
 * [Local PC Setup](#Local-PC-Setup)
+    * [Using Static Credentials](#using-static-credentials)
+    * [Using AWS Named Profile](#using-aws-named-profile)
 * [CI/CD Pipeline Setup](#CI-CD-Pipeline-Setup)
 * [Reference](#Reference)
 
@@ -37,7 +39,30 @@ First thing first, I assume you already have AWS account and with (Preferably Ad
 
 You can use both AWS-CLI or Web Console (browser: https://aws.amazon.com/)
 
-##### NOTE: Java 1.8 and 11 supporteds
+##### NOTE: Java 1.8, 11, and 17+ supported
+
+## AWS SDK v2
+
+This plugin uses **AWS SDK v2** which provides improved performance and supports modern authentication methods including **AWS SSO**.
+
+### Authentication Methods
+
+The plugin supports multiple authentication methods (in order of priority):
+
+1. **Static credentials in `settings.xml`** — explicit `<username>` / `<password>` (AWS access key + secret)
+2. **Named profile in `settings.xml`** — `<profile>` element pointing to a profile in `~/.aws/config` (supports SSO, assumed roles, etc.)
+3. **Environment variables** — `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+4. **Default AWS credential chain** — credentials file, EC2 instance profile, ECS task role, EKS web identity
+
+### `<configuration>` reference
+
+| Element | Required | Description |
+|---|---|---|
+| `<region>` | Yes | AWS region, e.g. `eu-central-1` |
+| `<profile>` | No | AWS named profile from `~/.aws/config`. Mutually exclusive with static credentials — profile is ignored when `<username>`/`<password>` are present. |
+| `<publicRepository>` | No | Set to `true` to upload objects with public-read ACL. Default: `false` |
+| `<endpoint>` | No | Custom S3-compatible endpoint URL |
+| `<pathStyleEnabled>` | No | Enable path-style access. Required for some S3-compatible services. Default: `false` |
 
 <a name="Configure-By-AWS-CLI"></a>
 ## Configure By AWS CLI:
@@ -105,17 +130,21 @@ create a user with (Programmatic access).
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.ehsaniara/maven-repository-aws-s3.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.ehsaniara%22%20AND%20a:%22maven-repository-aws-s3%22)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ehsaniara/maven-repository-aws-s3)
 
-If you plane to deploy you project jar from your local machine you need to follow the following steps.
+If you plan to deploy your project jar from your local machine you need to follow the following steps.
 
 * on your local maven setup directory ```.m2``` add the following XML snaps in ```setting.xml```. 
-you basically gave permission to maven to access the S3 bucket, to be able to push or pull the files. one for **snapshot** and one for **release**.
+You basically give permission to maven to access the S3 bucket, to be able to push or pull the files. One for **snapshot** and one for **release**.
 
 ##### Note: create ```setting.xml``` if it's not exist in ```.m2``` directory
+
+<a name="using-static-credentials"></a>
+### Using Static Credentials
+
+Use `<username>` and `<password>` to provide an IAM access key and secret directly:
+
 ```xml
 <settings>
   <servers>
-    ...
-    ...
     <server>
       <id>YOUR_BUCKET_NAME-snapshot</id>
       <username>AWS_ACCESS_KEY_ID</username>
@@ -134,11 +163,46 @@ you basically gave permission to maven to access the S3 bucket, to be able to pu
         <publicRepository>false</publicRepository>
       </configuration>
     </server>
-    ....
-    ....
   </servers>
 </settings>
 ```
+
+<a name="using-aws-named-profile"></a>
+### Using AWS Named Profile
+
+If you authenticate via AWS SSO or a named profile in `~/.aws/config`, omit `<username>`/`<password>` and use `<profile>` instead. The profile name must match an entry in your `~/.aws/config` file.
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>YOUR_BUCKET_NAME-snapshot</id>
+      <configuration>
+        <region>AWS_REGION</region>
+        <profile>YOUR_AWS_PROFILE_NAME</profile>
+        <publicRepository>false</publicRepository>
+      </configuration>
+    </server>
+    <server>
+      <id>YOUR_BUCKET_NAME-release</id>
+      <configuration>
+        <region>AWS_REGION</region>
+        <profile>YOUR_AWS_PROFILE_NAME</profile>
+        <publicRepository>false</publicRepository>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+```
+
+For SSO profiles, make sure you have an active session before running Maven:
+
+```bash
+aws sso login --profile YOUR_AWS_PROFILE_NAME
+mvn deploy
+```
+
+> **Note:** If both `<username>`/`<password>` and `<profile>` are present, static credentials take priority.
 
 * on your project ```pom.xml``` add the following xml to let maven **DOWNLOAD** your project artifactory from the maven-repo 
 ```xml
@@ -183,7 +247,7 @@ And the most important one, add the following xml in your project ```pom.xml``` 
         <extension>
             <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.14</version>
         </extension>
     </extensions>
 ...
@@ -223,7 +287,7 @@ for Example:
         <extension>
             <groupId>com.github.ehsaniara</groupId>
             <artifactId>maven-repository-aws-s3</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.14</version>
         </extension>
     </extensions>
     
