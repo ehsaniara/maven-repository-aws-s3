@@ -42,8 +42,15 @@ public class S3Connect {
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            CLIENT_CACHE.values().forEach(S3Client::close);
-            CLIENT_CACHE.clear();
+            // Maven wagon classloaders may already be unloaded at JVM shutdown,
+            // causing NoClassDefFoundError for HTTP client internals. Catch Throwable
+            // so the hook fails silently — the OS reclaims all connections on exit anyway.
+            try {
+                CLIENT_CACHE.values().forEach(S3Client::close);
+                CLIENT_CACHE.clear();
+            } catch (Throwable t) {
+                // ignore — classloader already torn down
+            }
         }, "s3-client-shutdown"));
     }
 
