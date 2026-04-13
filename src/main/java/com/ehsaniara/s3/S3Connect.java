@@ -40,6 +40,13 @@ public class S3Connect {
 
     private static final ConcurrentHashMap<String, S3Client> CLIENT_CACHE = new ConcurrentHashMap<>();
 
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            CLIENT_CACHE.values().forEach(S3Client::close);
+            CLIENT_CACHE.clear();
+        }, "s3-client-shutdown"));
+    }
+
     /**
      * <p>connect.</p>
      *
@@ -73,7 +80,12 @@ public class S3Connect {
     }
 
     private static String buildCacheKey(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) {
-        String credentialKey = Objects.nonNull(authenticationInfo) ? authenticationInfo.getUserName() : Objects.toString(profile, "default");
+        String credentialKey;
+        if (Objects.nonNull(authenticationInfo)) {
+            credentialKey = authenticationInfo.getUserName();
+        } else {
+            credentialKey = Objects.toString(profile, "default");
+        }
         return String.join("|",
                 credentialKey,
                 Objects.toString(region, ""),
