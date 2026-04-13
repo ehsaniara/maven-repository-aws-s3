@@ -59,6 +59,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
 
     private String endpoint;
     private String pathStyleEnabled;
+    private String profile;
 
     /** {@inheritDoc} */
     @Override
@@ -207,7 +208,7 @@ public class S3StorageWagon extends AbstractStorageWagon {
 
         log.log(Level.FINER, String.format("Opening connection for bucket %s and directory %s", bucket, directory));
         s3StorageRepo = new S3StorageRepo(bucket, directory, new PublicReadProperty(publicRepository));
-        s3StorageRepo.connect(authenticationInfo, region, new EndpointProperty(endpoint), new PathStyleEnabledProperty(pathStyleEnabled));
+        s3StorageRepo.connect(authenticationInfo, region, new EndpointProperty(endpoint), new PathStyleEnabledProperty(pathStyleEnabled), profile);
 
         sessionListenerContainer.fireSessionLoggedIn();
         sessionListenerContainer.fireSessionOpened();

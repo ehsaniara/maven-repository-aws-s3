@@ -46,10 +46,10 @@ public class S3Connect {
      * @return S3Client
      * @throws org.apache.maven.wagon.authentication.AuthenticationException org.apache.maven.wagon.authentication.AuthenticationException
      */
-    public static S3Client connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
+    public static S3Client connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) throws AuthenticationException {
 
         try {
-            S3Client s3Client = createS3Client(authenticationInfo, region, endpoint, pathStyle);
+            S3Client s3Client = createS3Client(authenticationInfo, region, endpoint, pathStyle, profile);
 
             log.finer(String.format("Connected to S3 using endpoint %s.", endpoint.isPresent() ? endpoint.get() : "default"));
 
@@ -74,7 +74,7 @@ public class S3Connect {
      * @param pathStyle          pathStyle
      * @return S3Client
      */
-    private static S3Client createS3Client(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) {
+    private static S3Client createS3Client(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) {
         final S3RegionProviderOrder regionProvider = new S3RegionProviderOrder(region);
 
         S3Configuration s3Config = S3Configuration.builder()
@@ -82,7 +82,7 @@ public class S3Connect {
                 .build();
 
         S3ClientBuilder builder = S3Client.builder()
-                .credentialsProvider(new AwsCredentialsFactory().connect(authenticationInfo))
+                .credentialsProvider(new AwsCredentialsFactory().connect(authenticationInfo, profile))
                 .serviceConfiguration(s3Config);
 
         String regionId = regionProvider.getRegionString();

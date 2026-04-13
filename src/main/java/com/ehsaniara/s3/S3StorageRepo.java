@@ -83,10 +83,11 @@ public class S3StorageRepo {
      * @param region a {@link java.lang.String} object.
      * @param endpoint a {@link com.ehsaniara.s3.EndpointProperty} object.
      * @param pathStyle a {@link com.ehsaniara.s3.PathStyleEnabledProperty} object.
+     * @param profile a {@link java.lang.String} object. This is an optional AWS named profile from ~/.aws/credentials or ~/.aws/config.
      * @throws org.apache.maven.wagon.authentication.AuthenticationException if any.
      */
-    public void connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle) throws AuthenticationException {
-        this.s3Client = S3Connect.connect(authenticationInfo, region, endpoint, pathStyle);
+    public void connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) throws AuthenticationException {
+        this.s3Client = S3Connect.connect(authenticationInfo, region, endpoint, pathStyle, profile);
     }
 
     /**

@@ -57,6 +57,9 @@ public class S3Mojo extends AbstractMojo {
     @Parameter(property = "s3-download.region")
     private String region;
 
+    @Parameter(property = "s3-download.profile")
+    private String profile;
+
     private static final String DIRECTORY_CONTENT_TYPE = "application/x-directory";
 
     private static final Logger LOGGER = Logger.getLogger(S3Mojo.class.getName());
@@ -74,12 +77,14 @@ public class S3Mojo extends AbstractMojo {
      * @param keys a {@link java.util.List} object.
      * @param downloadPath a {@link java.lang.String} object.
      * @param region a {@link java.lang.String} object.
+     * @param profile a {@link java.lang.String} object.
      */
-    public S3Mojo(String bucket, List<String> keys, String downloadPath, String region) {
+    public S3Mojo(String bucket, List<String> keys, String downloadPath, String region, String profile) {
         this.bucket = bucket;
         this.keys = keys;
         this.downloadPath = downloadPath;
         this.region = region;
+        this.profile = profile;
     }
 
     /** {@inheritDoc} */
@@ -89,7 +94,7 @@ public class S3Mojo extends AbstractMojo {
 
         try {
             // Path style access is disabled by default in SDK v2
-            s3Client = S3Connect.connect(null, region, EndpointProperty.empty(), new PathStyleEnabledProperty("false"));
+            s3Client = S3Connect.connect(null, region, EndpointProperty.empty(), new PathStyleEnabledProperty("false"), profile);
         } catch (AuthenticationException e) {
             throw new MojoExecutionException(
                     String.format("Unable to authenticate to S3 with the available credentials. Make sure to either define the environment variables or System properties defined in https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html.%n" +
@@ -106,7 +111,7 @@ public class S3Mojo extends AbstractMojo {
             List<Iterator<String>> prefixKeysIterators = keys.stream()
                     .map(pi -> new PrefixKeysIterator(s3Client, bucket, pi))
                     .collect(Collectors.toList());
-            Iterator<String> keyIteratorConcatenated = new KeyIteratorConcatenated(prefixKeysIterators);
+            Iterator<String> keyIteratorConcatenated = new KeyIteratorConcatenated<>(prefixKeysIterators);
 
             while (keyIteratorConcatenated.hasNext()) {
 
