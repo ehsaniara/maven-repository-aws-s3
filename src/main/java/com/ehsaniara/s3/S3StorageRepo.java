@@ -247,7 +247,9 @@ public class S3StorageRepo {
      * <p>disconnect.</p>
      */
     public void disconnect() {
-        // S3Client lifecycle is managed by S3Connect's static cache; do not close it here.
+        if (s3Client != null) {
+            s3Client.close();
+        }
         s3Client = null;
     }
 

@@ -26,8 +26,6 @@ import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.S3Configuration;
 
 import java.net.URI;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * S3Connect s3Connect
@@ -37,8 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Log
 public class S3Connect {
-
-    private static final ConcurrentHashMap<String, S3Client> CLIENT_CACHE = new ConcurrentHashMap<>();
 
     /**
      * <p>connect.</p>
@@ -53,8 +49,7 @@ public class S3Connect {
     public static S3Client connect(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) throws AuthenticationException {
 
         try {
-            String cacheKey = buildCacheKey(authenticationInfo, region, endpoint, pathStyle, profile);
-            S3Client s3Client = CLIENT_CACHE.computeIfAbsent(cacheKey, k -> createS3Client(authenticationInfo, region, endpoint, pathStyle, profile));
+            S3Client s3Client = createS3Client(authenticationInfo, region, endpoint, pathStyle, profile);
 
             log.finer(String.format("Connected to S3 using endpoint %s.", endpoint.isPresent() ? endpoint.get() : "default"));
 
@@ -72,15 +67,6 @@ public class S3Connect {
         }
     }
 
-    private static String buildCacheKey(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) {
-        String credentialKey = Objects.nonNull(authenticationInfo) ? authenticationInfo.getUserName() : Objects.toString(profile, "default");
-        return String.join("|",
-                credentialKey,
-                Objects.toString(region, ""),
-                endpoint.isPresent() ? endpoint.get() : "",
-                String.valueOf(pathStyle.get()));
-    }
-
     /**
      * @param authenticationInfo authenticationInfo
      * @param region             region
@@ -91,7 +77,7 @@ public class S3Connect {
     private static S3Client createS3Client(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) {
         final S3RegionProviderOrder regionProvider = new S3RegionProviderOrder(region);
 
-        log.info("Creating new S3Client instance.");
+        log.fine("Creating new S3Client instance.");
 
         S3Configuration s3Config = S3Configuration.builder()
                 .pathStyleAccessEnabled(pathStyle.get())
