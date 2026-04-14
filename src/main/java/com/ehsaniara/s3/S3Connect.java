@@ -40,20 +40,6 @@ public class S3Connect {
 
     private static final ConcurrentHashMap<String, S3Client> CLIENT_CACHE = new ConcurrentHashMap<>();
 
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            // Maven wagon classloaders may already be unloaded at JVM shutdown,
-            // causing NoClassDefFoundError for HTTP client internals. Catch Throwable
-            // so the hook fails silently — the OS reclaims all connections on exit anyway.
-            try {
-                CLIENT_CACHE.values().forEach(S3Client::close);
-                CLIENT_CACHE.clear();
-            } catch (Throwable t) {
-                // ignore — classloader already torn down
-            }
-        }, "s3-client-shutdown"));
-    }
-
     /**
      * <p>connect.</p>
      *
@@ -87,12 +73,7 @@ public class S3Connect {
     }
 
     private static String buildCacheKey(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) {
-        String credentialKey;
-        if (Objects.nonNull(authenticationInfo)) {
-            credentialKey = authenticationInfo.getUserName();
-        } else {
-            credentialKey = Objects.toString(profile, "default");
-        }
+        String credentialKey = Objects.nonNull(authenticationInfo) ? authenticationInfo.getUserName() : Objects.toString(profile, "default");
         return String.join("|",
                 credentialKey,
                 Objects.toString(region, ""),
