@@ -73,7 +73,7 @@ public interface ListenerContainer {
      *
      * @param resource a {@link org.apache.maven.wagon.resource.Resource} object.
      * @param requestType a int.
-     * @param buffer an array of {@link byte} objects.
+     * @param buffer an array of {@link Byte} objects.
      * @param length a int.
      */
     void fireTransferProgress(Resource resource, int requestType, byte[] buffer, int length);
