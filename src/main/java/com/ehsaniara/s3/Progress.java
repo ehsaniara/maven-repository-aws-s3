@@ -27,7 +27,7 @@ public interface Progress {
     /**
      * <p>progress.</p>
      *
-     * @param buffer an array of {@link byte} objects.
+     * @param buffer an array of {@link Byte} objects.
      * @param length a int.
      */
     void progress(byte[] buffer, int length);

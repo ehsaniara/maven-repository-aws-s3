@@ -21,6 +21,7 @@ import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
 import java.util.Objects;
@@ -38,17 +39,21 @@ public class AwsCredentialsFactory {
      * <p>connect.</p>
      *
      * @param authenticationInfo a {@link org.apache.maven.wagon.authentication.AuthenticationInfo} object.
+     * @param profile         an optional AWS named profile from ~/.aws/credentials or ~/.aws/config.
      * @return a {@link software.amazon.awssdk.auth.credentials.AwsCredentialsProvider} object.
      */
-    public AwsCredentialsProvider connect(AuthenticationInfo authenticationInfo) {
-        if (Objects.isNull(authenticationInfo)) {
-            return DefaultCredentialsProvider.create();
-        } else {
-            log.info("AWS Connection By StaticCredentialsProvider class");
+    public AwsCredentialsProvider connect(AuthenticationInfo authenticationInfo, String profile) {
+        if (!Objects.isNull(authenticationInfo)) {
+            log.fine("AWS Connection By StaticCredentialsProvider class");
             return StaticCredentialsProvider.create(
                     AwsBasicCredentials.create(
                             authenticationInfo.getUserName(),
                             authenticationInfo.getPassword()));
+        } else if (profile != null && !profile.isEmpty()) {
+            log.fine(String.format("AWS Connection By ProfileCredentialsProvider using profile '%s'", profile));
+            return ProfileCredentialsProvider.create(profile);
+        } else {
+            return DefaultCredentialsProvider.builder().build();
         }
     }
 }

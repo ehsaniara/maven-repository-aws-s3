@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +37,7 @@ class AwsCredentialsFactoryTest {
 
     @Test
     void connect_withNullAuthenticationInfo_returnsDefaultCredentialsProvider() {
-        AwsCredentialsProvider provider = factory.connect(null);
+        AwsCredentialsProvider provider = factory.connect(null, null);
 
         assertNotNull(provider);
         assertTrue(provider instanceof DefaultCredentialsProvider,
@@ -49,7 +50,7 @@ class AwsCredentialsFactoryTest {
         authInfo.setUserName("testAccessKey");
         authInfo.setPassword("testSecretKey");
 
-        AwsCredentialsProvider provider = factory.connect(authInfo);
+        AwsCredentialsProvider provider = factory.connect(authInfo, null);
 
         assertNotNull(provider);
         assertTrue(provider instanceof StaticCredentialsProvider,
@@ -62,9 +63,40 @@ class AwsCredentialsFactoryTest {
         authInfo.setUserName("myAccessKey");
         authInfo.setPassword("mySecretKey");
 
-        AwsCredentialsProvider provider = factory.connect(authInfo);
+        AwsCredentialsProvider provider = factory.connect(authInfo, null);
 
         assertEquals("myAccessKey", provider.resolveCredentials().accessKeyId());
         assertEquals("mySecretKey", provider.resolveCredentials().secretAccessKey());
+    }
+
+    @Test
+    void connect_withprofile_returnsProfileCredentialsProvider() {
+        AwsCredentialsProvider provider = factory.connect(null, "maven");
+
+        assertNotNull(provider);
+        assertTrue(provider instanceof ProfileCredentialsProvider,
+                "Expected ProfileCredentialsProvider when profile is set");
+    }
+
+    @Test
+    void connect_withAuthInfoAndprofile_staticCredentialsTakePrecedence() {
+        AuthenticationInfo authInfo = new AuthenticationInfo();
+        authInfo.setUserName("myAccessKey");
+        authInfo.setPassword("mySecretKey");
+
+        AwsCredentialsProvider provider = factory.connect(authInfo, "maven");
+
+        assertNotNull(provider);
+        assertTrue(provider instanceof StaticCredentialsProvider,
+                "StaticCredentialsProvider should take precedence over profile");
+    }
+
+    @Test
+    void connect_withEmptyProfile_returnsDefaultCredentialsProvider() {
+        AwsCredentialsProvider provider = factory.connect(null, "");
+
+        assertNotNull(provider);
+        assertTrue(provider instanceof DefaultCredentialsProvider,
+                "Expected DefaultCredentialsProvider when profile is empty string");
     }
 }
