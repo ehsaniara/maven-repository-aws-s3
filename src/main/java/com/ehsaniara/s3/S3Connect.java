@@ -43,6 +43,7 @@ public class S3Connect {
      * @param region             region
      * @param endpoint           endpoint
      * @param pathStyle          pathStyle
+     * @param profile            AWS named profile
      * @return S3Client
      * @throws org.apache.maven.wagon.authentication.AuthenticationException org.apache.maven.wagon.authentication.AuthenticationException
      */
@@ -72,6 +73,7 @@ public class S3Connect {
      * @param region             region
      * @param endpoint           endpoint
      * @param pathStyle          pathStyle
+     * @param profile            AWS named profile
      * @return S3Client
      */
     private static S3Client createS3Client(AuthenticationInfo authenticationInfo, String region, EndpointProperty endpoint, PathStyleEnabledProperty pathStyle, String profile) {
